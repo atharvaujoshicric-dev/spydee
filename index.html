@@ -43,7 +43,6 @@
 
   .app { position:relative; z-index:1; max-width:900px; margin:0 auto; padding:24px 20px 80px; }
 
-  /* HEADER */
   header { text-align:center; padding:32px 0 28px; }
   .logo-ring { width:88px; height:88px; margin:0 auto 16px; position:relative; display:flex; align-items:center; justify-content:center; }
   .logo-ring svg { position:absolute; inset:0; animation:spin 8s linear infinite; }
@@ -61,7 +60,6 @@
   .browser-badge.native  { color:var(--success); border-color:rgba(0,255,136,0.3); background:rgba(0,255,136,0.07); }
   .browser-badge.fallback{ color:var(--warn);    border-color:rgba(255,170,0,0.3);  background:rgba(255,170,0,0.07); }
 
-  /* STATUS BAR */
   .status-bar { display:flex; align-items:center; justify-content:center; gap:20px; margin:20px 0 28px; flex-wrap:wrap; }
   .status-dot  { display:flex; align-items:center; gap:7px; font-size:0.68rem; color:var(--muted); letter-spacing:0.1em; }
   .dot { width:7px; height:7px; border-radius:50%; background:var(--muted); }
@@ -70,12 +68,10 @@
   .dot.off { background:var(--danger);  box-shadow:0 0 8px var(--danger); }
   @keyframes pdot { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
 
-  /* VOICE PANEL */
   .voice-panel { background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:28px; margin-bottom:20px; backdrop-filter:blur(12px); position:relative; overflow:hidden; }
   .voice-panel::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(0,245,255,0.04) 0%,transparent 60%); pointer-events:none; }
   .voice-label { font-family:'Orbitron',monospace; font-size:0.62rem; letter-spacing:0.25em; color:var(--muted); margin-bottom:16px; }
 
-  /* VISUALIZER */
   .voice-visualizer { display:flex; align-items:flex-end; justify-content:center; gap:3px; height:48px; margin:16px 0; }
   .bar { width:4px; background:var(--cyan); border-radius:2px; opacity:0.3; height:4px; transition:height 0.08s; }
   @keyframes bpulse { 0%,100%{height:4px;} 50%{height:36px;} }
@@ -88,7 +84,6 @@
 
   .spydee-response { font-family:'Orbitron',monospace; font-size:0.9rem; color:var(--cyan); text-align:center; min-height:24px; letter-spacing:0.05em; text-shadow:0 0 10px var(--cyan-glow); }
 
-  /* USAGE BOX */
   .usage-box { background:rgba(0,245,255,0.04); border:1px solid rgba(0,245,255,0.12); border-radius:10px; padding:14px 18px; margin-top:16px; }
   .usage-row { display:flex; align-items:flex-start; gap:10px; margin-bottom:8px; font-size:0.7rem; line-height:1.6; }
   .usage-row:last-child { margin-bottom:0; }
@@ -96,14 +91,12 @@
   .usage-val { color:var(--muted); }
   .usage-val span { color:var(--text); }
 
-  /* MIC BUTTON */
   .wake-btn { display:flex; align-items:center; gap:10px; margin:16px auto 0; width:fit-content; background:var(--cyan-dim); border:1px solid var(--cyan); border-radius:40px; padding:10px 22px; font-family:'Orbitron',monospace; font-size:0.72rem; letter-spacing:0.12em; color:var(--cyan); cursor:pointer; transition:all 0.2s; }
   .wake-btn:hover { background:rgba(0,245,255,0.22); }
   .wake-btn.active { background:rgba(0,245,255,0.25); box-shadow:0 0 20px var(--cyan-glow),inset 0 0 10px rgba(0,245,255,0.1); }
   .wake-btn.wake-active { animation:wakepulse 0.8s ease-in-out infinite; }
   @keyframes wakepulse { 0%,100%{box-shadow:0 0 20px var(--cyan-glow);} 50%{box-shadow:0 0 50px var(--cyan-glow),0 0 80px rgba(0,245,255,0.3);} }
 
-  /* PTT */
   .ptt-section { display:none; flex-direction:column; align-items:center; gap:12px; margin-top:16px; }
   .ptt-btn { width:72px; height:72px; border-radius:50%; background:rgba(255,68,102,0.12); border:2px solid var(--danger); color:var(--danger); font-size:28px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.15s; user-select:none; -webkit-user-select:none; }
   .ptt-btn:hover { background:rgba(255,68,102,0.2); }
@@ -111,7 +104,6 @@
   .ptt-hint { font-family:'Orbitron',monospace; font-size:0.6rem; letter-spacing:0.15em; color:var(--muted); text-align:center; }
   .ptt-transcript { font-size:0.75rem; color:var(--text); text-align:center; min-height:18px; opacity:0.7; font-style:italic; max-width:420px; line-height:1.5; }
 
-  /* INPUT PANEL */
   .input-panel { background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:20px; margin-bottom:20px; backdrop-filter:blur(12px); }
   .input-label { font-family:'Orbitron',monospace; font-size:0.62rem; letter-spacing:0.25em; color:var(--muted); margin-bottom:12px; }
   .input-row { display:flex; gap:10px; align-items:flex-start; }
@@ -124,7 +116,6 @@
   .hint { font-size:0.68rem; color:var(--muted); margin-top:10px; line-height:1.6; }
   .hint span { color:var(--cyan); opacity:0.7; }
 
-  /* TASKS */
   .tasks-panel { background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:20px; backdrop-filter:blur(12px); }
   .panel-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
   .panel-title { font-family:'Orbitron',monospace; font-size:0.62rem; letter-spacing:0.25em; color:var(--muted); }
@@ -164,7 +155,6 @@
   .filter-tab { font-family:'Orbitron',monospace; font-size:0.6rem; letter-spacing:0.1em; padding:5px 14px; border-radius:20px; border:1px solid var(--border); background:none; color:var(--muted); cursor:pointer; transition:all 0.2s; }
   .filter-tab.active { background:var(--cyan-dim); border-color:var(--cyan); color:var(--cyan); }
 
-  /* TOAST */
   .toast-container { position:fixed; top:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:10px; pointer-events:none; }
   .toast { background:rgba(6,18,42,0.97); border:1px solid var(--cyan); border-radius:12px; padding:14px 18px; max-width:320px; box-shadow:0 0 30px rgba(0,245,255,0.2); animation:slidein 0.3s ease; pointer-events:all; }
   .toast.reminder-toast { border-color:var(--warn); box-shadow:0 0 30px rgba(255,170,0,0.3); }
@@ -177,7 +167,6 @@
   .toast-dismiss { font-family:'Orbitron',monospace; font-size:0.6rem; color:var(--muted); cursor:pointer; margin-top:8px; display:block; }
   .toast-dismiss:hover { color:var(--cyan); }
 
-  /* VOICE OVERLAY */
   #voice-overlay { display:none; position:fixed; inset:0; border:3px solid rgba(0,245,255,0.3); z-index:100; pointer-events:none; animation:bglow 1s ease-in-out infinite; }
   @keyframes bglow { 0%,100%{border-color:rgba(0,245,255,0.15);} 50%{border-color:rgba(0,245,255,0.5);} }
   #voice-overlay.show { display:block; }
@@ -212,7 +201,7 @@
       <div class="logo-icon">S</div>
     </div>
     <h1>SPYDEE</h1>
-    <div class="tagline">Personal Intelligence System · v2.0</div>
+    <div class="tagline">Personal Intelligence System · v2.1</div>
     <div id="browser-badge" class="browser-badge native">● DETECTING BROWSER...</div>
   </header>
 
@@ -247,15 +236,15 @@
     <div class="usage-box">
       <div class="usage-row">
         <span class="usage-key">ONE PHRASE</span>
-        <span class="usage-val">Say it all at once: <span>"Hey Spydee, remind me to take meds in 30 minutes"</span></span>
+        <span class="usage-val">Say it all at once: <span>"Hey Spidee, remind me to take meds in 30 minutes"</span></span>
       </div>
       <div class="usage-row">
         <span class="usage-key">WITH TIME</span>
-        <span class="usage-val"><span>"Hey Spydee, call mom tomorrow at 9am"</span> · <span>"Hey Spydee, gym in 2 hours"</span></span>
+        <span class="usage-val"><span>"Hey Spidee, call mom tomorrow at 9am"</span> · <span>"Hey Spidee, gym in 2 hours"</span></span>
       </div>
       <div class="usage-row">
         <span class="usage-key">JUST TASK</span>
-        <span class="usage-val"><span>"Hey Spydee, review the project report"</span> — logged without reminder</span>
+        <span class="usage-val"><span>"Hey Spidee, review the project report"</span> — logged without reminder</span>
       </div>
     </div>
   </div>
@@ -315,6 +304,51 @@ let audioCtx   = null;
 let analyser   = null;
 let vizRAF     = null;
 
+// ── SPEECH SYNTHESIS ─────────────────────────────────────────
+// FIX: Pre-queue a silent utterance on first user gesture so
+// speechSynthesis is "unlocked" and reminder speech works later
+// even when fired from a setTimeout (no user gesture present).
+const synth = window.speechSynthesis || null;
+let voice = null;
+let synthUnlocked = false;
+
+function loadVoices() {
+  if (!synth) return;
+  const all = synth.getVoices();
+  voice =
+    all.find(v => /google/i.test(v.name) && v.lang.startsWith('en')) ||
+    all.find(v => v.lang === 'en-US') ||
+    all.find(v => v.lang.startsWith('en')) ||
+    all[0] || null;
+}
+if (synth) { synth.onvoiceschanged = loadVoices; loadVoices(); }
+
+// Call once on any user interaction to unlock audio
+function unlockSynth() {
+  if (synthUnlocked || !synth) return;
+  synthUnlocked = true;
+  const u = new SpeechSynthesisUtterance('');
+  u.volume = 0;
+  synth.speak(u);
+}
+document.addEventListener('click',  unlockSynth, { once: true });
+document.addEventListener('keydown', unlockSynth, { once: true });
+
+function speak(text, interrupt = false) {
+  if (!synth) return;
+  // Chrome has a bug where speech hangs after ~15s of not speaking.
+  // Resume before every utterance to be safe.
+  if (synth.paused) synth.resume();
+  if (interrupt) synth.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  if (voice) u.voice = voice;
+  u.rate = 0.92; u.pitch = 0.88; u.volume = 1.0;
+  setViz('speak');
+  u.onend  = () => setViz((!muted && srRunning) ? 'listen' : '');
+  u.onerror = () => setViz((!muted && srRunning) ? 'listen' : '');
+  synth.speak(u);
+}
+
 // ── CLOCK ────────────────────────────────────────────────────
 (function tick() {
   const now = new Date();
@@ -335,32 +369,6 @@ let vizRAF     = null;
   document.getElementById('notif-status').textContent = ok ? 'NOTIFICATIONS ON' : 'NOTIFICATIONS OFF';
 })();
 
-// ── SPEECH SYNTHESIS ─────────────────────────────────────────
-const synth = window.speechSynthesis || null;
-let voice = null;
-
-function loadVoices() {
-  if (!synth) return;
-  const all = synth.getVoices();
-  voice =
-    all.find(v => /google/i.test(v.name) && v.lang.startsWith('en')) ||
-    all.find(v => v.lang === 'en-US') ||
-    all.find(v => v.lang.startsWith('en')) ||
-    all[0] || null;
-}
-if (synth) { synth.onvoiceschanged = loadVoices; loadVoices(); }
-
-function speak(text, interrupt = false) {
-  if (!synth) return;
-  if (interrupt) synth.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  if (voice) u.voice = voice;
-  u.rate = 0.92; u.pitch = 0.88; u.volume = 1.0;
-  setViz('speak');
-  u.onend = () => setViz((!muted && srRunning) ? 'listen' : '');
-  synth.speak(u);
-}
-
 // ── UI HELPERS ───────────────────────────────────────────────
 function setResponse(txt) { document.getElementById('spydee-response').textContent = txt; }
 
@@ -378,25 +386,28 @@ function showToast(title, body, reminder = false) {
   setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 350); }, 10000);
 }
 
-// Fire all alert channels for a reminder
+// ── REMINDER FIRE ───────────────────────────────────────────
+// FIX: Chrome's speechSynthesis often hangs in backgrounded tabs.
+// We call synth.resume() first and wrap in a small delay to let the
+// browser process the resume before queueing the new utterance.
 function fireReminder(taskText) {
-  // Visual
   setResponse('🔔 REMINDER: ' + taskText.toUpperCase());
-  // Toast
   showToast('⏰ REMINDER', taskText, true);
-  // Desktop notification
   if (Notification.permission === 'granted') {
     new Notification('⚡ SPYDEE REMINDER', { body: taskText });
   }
-  // Spoken alert — most important fix
-  speak('Reminder: ' + taskText, true);
+  // Resume synth in case it was suspended (Chrome backgrounded-tab bug)
+  if (synth && synth.paused) synth.resume();
+  // Small delay ensures resume() has taken effect before we enqueue
+  setTimeout(() => speak('Hey Spydarr! Reminder: ' + taskText, true), 80);
 }
 
 // ── NLP PARSER ───────────────────────────────────────────────
+// Strip any phonetic variant of the wake word before logging the task.
+const WAKE_REGEX = /^(hey\s+sp[iy]d[eiy]{1,3}[ey]?|hey\s+speedy?|hey\s+spider|hey\s+spy\s*d(?:ee)?|heysp[iy]d[eiy]+)[,.]?\s*/i;
+
 function parseCommand(raw) {
-  // Strip wake word
-  let input = raw.replace(/^(hey\s+sp[yi]d+[eiy]+[,.]?\s*)/i, '').trim();
-  // Strip action prefixes
+  let input = raw.replace(WAKE_REGEX, '').trim();
   input = input.replace(/^(remind me to|don'?t forget to?|don'?t forget|remember to|task[:\s]+|note[:\s]+)/i, '').trim();
 
   let text  = input;
@@ -404,7 +415,6 @@ function parseCommand(raw) {
   const now   = new Date();
   const lower = input.toLowerCase();
 
-  // "in X minutes/hours"
   const inM = lower.match(/\bin\s+(\d+)\s*(min(?:ute)?s?|hours?|hrs?)/);
   if (inM) {
     const val = parseInt(inM[1]);
@@ -412,7 +422,6 @@ function parseCommand(raw) {
     text = text.replace(new RegExp(inM[0],'i'),'').trim();
   }
 
-  // "at H[:MM][am/pm]"
   if (!remindAt) {
     const atM = lower.match(/\bat\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/);
     if (atM) {
@@ -428,14 +437,12 @@ function parseCommand(raw) {
     }
   }
 
-  // "tomorrow" alone → 9 am
   if (!remindAt && lower.includes('tomorrow')) {
     const d = new Date(now); d.setDate(d.getDate()+1); d.setHours(9,0,0,0);
     remindAt = d;
     text = text.replace(/tomorrow/i,'').trim();
   }
 
-  // "tonight" → 8 pm
   if (!remindAt && lower.includes('tonight')) {
     const d = new Date(now); d.setHours(20,0,0,0);
     if (d<=now) d.setDate(d.getDate()+1);
@@ -450,6 +457,7 @@ function parseCommand(raw) {
 }
 
 // ── COMMAND HANDLER ──────────────────────────────────────────
+// Voice replies always open with "Hey Spydarr" — TTS reads this as "Hey Spider"
 function handleCommand(transcript) {
   const t = transcript.trim();
   if (!t || t.length < 2) return;
@@ -459,20 +467,30 @@ function handleCommand(transcript) {
 
   if (task.remindAt) {
     setResponse('REMINDER SET: ' + fmtTime(task.remindAt));
-    speak(`Got it. I will remind you to ${task.text} at ${fmtTime(task.remindAt)}.`, true);
+    speak(`Hey Spydarr! Got it. I will remind you to ${task.text} at ${fmtTime(task.remindAt)}.`, true);
   } else {
     setResponse('TASK LOGGED: ' + task.text.toUpperCase());
-    speak('Task logged: ' + task.text, true);
+    speak(`Hey Spydarr! Task logged: ${task.text}.`, true);
   }
 }
 
 // ════════════════════════════════════════════════════════════════
-// NATIVE SR  (Chrome / Edge / any browser with Web Speech API)
+// NATIVE SR — FIXED WAKE-WORD + COMMAND DETECTION
 //
-// CRITICAL FIX: We no longer use a two-step "wake then listen" flow.
-// Instead, we listen for the ENTIRE phrase in one shot.
-// "Hey Spydee remind me to X" comes through as a single interim/final.
-// We detect the wake word in interims, then wait for a final result.
+// ROOT CAUSE OF ORIGINAL BUG:
+// Chrome fires results in two waves:
+//   Wave 1 (interim): "hey spydee remind me to take meds"
+//   Wave 2 (final):   "remind me to take meds"   ← no wake word!
+//
+// The old code required the FINAL result to also contain the wake word,
+// which it never does (Chrome strips or re-transcribes it). So commands
+// were silently dropped.
+//
+// FIX: Once we've seen the wake word in ANY interim result, we set
+// wakeHeard=true and accumulate ALL subsequent text (interim + final)
+// into a running buffer. The first clean final that arrives after
+// wakeHeard=true is the command. We no longer require the final to
+// re-contain the wake word.
 // ════════════════════════════════════════════════════════════════
 function buildSR() {
   const r = new SR_CLASS();
@@ -481,60 +499,70 @@ function buildSR() {
   r.lang            = 'en-US';
   r.maxAlternatives = 3;
 
-  let wakeHeard  = false;  // we've seen the wake word in an interim
-  let cmdTimer   = null;   // patience timer — fires if no final arrives
+  let wakeHeard   = false;
+  let fullBuffer  = '';   // accumulates entire phrase incl. wake word
+  let cmdTimer    = null;
+
+  function resetWake() {
+    wakeHeard  = false;
+    fullBuffer = '';
+    clearTimeout(cmdTimer);
+    resetWakeUI();
+  }
 
   r.onresult = (event) => {
-    let interimText = '';
-    let finalText   = '';
+    // Rebuild the current best transcript from all results in this batch
+    let interim = '';
+    let final   = '';
 
     for (let i = event.resultIndex; i < event.results.length; i++) {
       const res = event.results[i];
-      // Pick the best alternative (prefer one containing wake word)
+      // Pick the best alternative for this result
       let best = res[0].transcript;
       for (let a = 0; a < res.length; a++) {
         if (hasWake(res[a].transcript)) { best = res[a].transcript; break; }
       }
-      if (res.isFinal) finalText   += best + ' ';
-      else             interimText += best;
+      if (res.isFinal) final   += best + ' ';
+      else             interim += best;
     }
 
-    const all = (finalText + interimText).trim();
+    const combined = (final + interim).trim();
 
-    // Case 1: Final result containing wake word — execute immediately
-    if (finalText.trim() && hasWake(finalText)) {
-      clearTimeout(cmdTimer);
-      wakeHeard = false;
-      resetWakeUI();
-      handleCommand(finalText.trim());
-      return;
-    }
-
-    // Case 2: Interim contains wake word — light up and wait for final
-    if (!wakeHeard && hasWake(interimText)) {
-      wakeHeard = true;
+    // ── Step 1: detect wake word in ANY text (interim or final) ──
+    if (!wakeHeard && hasWake(combined)) {
+      wakeHeard  = true;
+      fullBuffer = combined;   // start buffer with this full phrase
       setViz('wake');
       setResponse('LISTENING FOR YOUR COMMAND...');
       document.getElementById('voice-overlay').classList.add('show');
       document.getElementById('wake-btn').classList.add('wake-active');
 
-      // Patience: if final never comes, use best interim we have
+      // Patience timer: if no clean final arrives within 3s, use what we have
       clearTimeout(cmdTimer);
       cmdTimer = setTimeout(() => {
-        if (wakeHeard && all) {
-          wakeHeard = false;
-          resetWakeUI();
-          handleCommand(all);
+        if (wakeHeard && fullBuffer) {
+          const buf = fullBuffer;
+          resetWake();
+          handleCommand(buf);
         }
       }, 3000);
     }
 
-    // Case 3: Final arrives after wake was seen — execute
-    if (wakeHeard && finalText.trim()) {
-      clearTimeout(cmdTimer);
-      wakeHeard = false;
-      resetWakeUI();
-      handleCommand(finalText.trim());
+    // ── Step 2: update running buffer once wake is heard ──
+    if (wakeHeard && combined) {
+      fullBuffer = combined;
+    }
+
+    // ── Step 3: a clean final result came in — fire the command ──
+    // We fire on the first final result AFTER wakeHeard is true.
+    // The final may or may not contain the wake word; we use fullBuffer
+    // which definitely includes the whole phrase.
+    if (wakeHeard && final.trim()) {
+      // Merge: prefer fullBuffer (it has the wake word + command)
+      // but append the clean final in case it has extra words
+      const toProcess = fullBuffer || final.trim();
+      resetWake();
+      handleCommand(toProcess);
     }
   };
 
@@ -545,35 +573,40 @@ function buildSR() {
       setResponse('MIC BLOCKED — ALLOW MICROPHONE IN BROWSER SETTINGS');
       muted = true; srRunning = false; setViz('');
     }
-    // no-speech / network / aborted → onend handles restart
+    // network / no-speech / aborted → onend will restart
   };
 
   r.onstart = () => {
     srRunning = true;
     document.getElementById('mic-dot').className = 'dot on';
     document.getElementById('mic-status').textContent = 'MIC ACTIVE';
-    document.getElementById('wake-btn-label').textContent = 'ALWAYS LISTENING';
+    document.getElementById('wake-btn-label').textContent = 'ALWAYS LISTENING — CLICK TO MUTE';
     document.getElementById('wake-btn').classList.add('active');
     setViz('listen');
-    setResponse('MONITORING FOR "HEY SPYDEE"...');
+    setResponse('MONITORING FOR "HEY SPIDEE"...');
   };
 
   r.onend = () => {
     srRunning = false;
     if (muted) return;
     clearTimeout(restartTimer);
-    restartTimer = setTimeout(() => { if (!muted) startSR(); }, 250);
+    restartTimer = setTimeout(() => { if (!muted) startSR(); }, 300);
   };
 
   return r;
 }
 
 function hasWake(t) {
+  // Display name: SPYDEE  |  Spoken trigger: "Hey Spidee"
+  // Accept every realistic phonetic mishearing Chrome might produce.
   const s = (t||'').toLowerCase();
-  return s.includes('hey spydee') || s.includes('hey speedy') ||
-         s.includes('hey spider') || s.includes('hey spidie') ||
-         s.includes('hey spy d')  || s.includes('a spydee')   ||
-         s.includes('heyspydee')  || s.includes('hey spidi');
+  return s.includes('hey spidee')  || s.includes('hey speedy')  ||
+         s.includes('hey spydee')  || s.includes('hey spider')  ||
+         s.includes('hey spidie')  || s.includes('hey spidi')   ||
+         s.includes('hey spy d')   || s.includes('hey spy dee') ||
+         s.includes('hey spidey')  || s.includes('heyspidee')   ||
+         s.includes('hey sp dy')   || s.includes('a spidee')    ||
+         s.includes('hey speedi')  || s.includes('hey spidy');
 }
 
 function resetWakeUI() {
@@ -601,6 +634,7 @@ function stopSR() {
 }
 
 function toggleMute() {
+  unlockSynth(); // ensure synth is unlocked on this gesture
   muted = !muted;
   if (muted) {
     stopSR();
@@ -621,11 +655,10 @@ function initNativeMode() {
   badge.className = 'browser-badge native';
   badge.textContent = IS_EDGE ? '● EDGE — ALWAYS-ON VOICE' : '● CHROME — ALWAYS-ON VOICE';
   document.getElementById('voice-label').textContent =
-    '// SAY THE FULL COMMAND IN ONE GO · "HEY SPYDEE, REMIND ME TO..."';
+    '// SAY THE FULL COMMAND IN ONE GO · "HEY SPIDEE, REMIND ME TO..."';
   document.getElementById('wake-btn').style.display = 'flex';
 
   if (IS_EDGE) {
-    // Edge blocks autostart before user gesture
     setResponse('CLICK THE MIC BUTTON TO ACTIVATE');
     document.getElementById('wake-btn-label').textContent = 'CLICK TO ACTIVATE';
   } else {
@@ -658,6 +691,7 @@ function initFallbackMode() {
 
 async function startPTT() {
   if (pttActive) return;
+  unlockSynth();
   pttActive = true; pttChunks = [];
   try {
     pttStream = await navigator.mediaDevices.getUserMedia({audio:true,video:false});
@@ -749,6 +783,7 @@ function toTextFallback() {
 
 // ── TASK MANAGEMENT ──────────────────────────────────────────
 function processInput() {
+  unlockSynth();
   const val = document.getElementById('task-input').value.trim();
   if (!val) return;
   const task = parseCommand(val);
@@ -870,13 +905,12 @@ rehydrateReminders();
 setTimeout(() => {
   if (HAS_SR) {
     initNativeMode();
-    showToast('SPYDEE ONLINE', 'Say the full command in one phrase: "Hey Spydee, remind me to..."');
+    showToast('SPYDEE ONLINE', 'Say the full command: "Hey Spidee, remind me to..."');
   } else {
     initFallbackMode();
     showToast('SPYDEE ONLINE', 'Hold the mic button, speak your command, then release.');
   }
-  // Greeting spoken aloud
-  speak('Spydee online. Say Hey Spydee followed by your command.');
+  speak('Hey Spydarr! Spydee online. Say Hey Spidee followed by your command.');
 }, 900);
 </script>
 </body>
