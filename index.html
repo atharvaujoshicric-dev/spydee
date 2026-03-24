@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Spydee — Personal Intelligence System</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
@@ -22,7 +22,7 @@
     --gold: #ffd700;
   }
 
-  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+  * { margin:0; padding:0; box-sizing:border-box; }
 
   body {
     font-family: 'Space Mono', monospace;
@@ -47,15 +47,9 @@
   .logo-ring svg { position:absolute; inset:0; }
   .logo-ring .spin1 { animation:spin 10s linear infinite; }
   .logo-icon { font-family:'Orbitron',monospace; font-weight:900; font-size:26px; color:var(--cyan); text-shadow:0 0 24px var(--cyan-glow); position:relative; z-index:2; }
+  @keyframes spin { to { transform:rotate(360deg); } }
 
   h1 { font-family:'Orbitron',monospace; font-size:2.4rem; font-weight:900; letter-spacing:0.14em; color:var(--cyan); text-shadow:0 0 32px var(--cyan-glow); }
-  
-  .browser-badge {
-    display:inline-flex; align-items:center; gap:7px; margin-top:12px;
-    font-family:'Orbitron',monospace; font-size:0.58rem; letter-spacing:0.12em;
-    padding:5px 14px; border-radius:20px; border:1px solid;
-  }
-  .browser-badge.native  { color:var(--success); border-color:rgba(0,255,136,0.3); background:rgba(0,255,136,0.06); }
 
   .status-bar { display:flex; align-items:center; justify-content:center; gap:18px; margin:18px 0 22px; flex-wrap:wrap; }
   .status-dot { display:flex; align-items:center; gap:7px; font-size:0.63rem; color:var(--muted); }
@@ -65,35 +59,33 @@
   .voice-panel {
     background:var(--panel); border:1px solid var(--border);
     border-radius:16px; padding:24px; margin-bottom:16px;
-    backdrop-filter:blur(12px); text-align: center;
+    backdrop-filter:blur(12px); position:relative; overflow:hidden;
   }
 
-  .voice-visualizer { display:flex; align-items:flex-end; justify-content:center; gap:3px; height:52px; margin:13px 0; }
-  .bar { width:4px; background:var(--cyan); border-radius:2px; height:4px; transition:height 0.1s; }
-  
   .spydee-response {
     font-family:'Orbitron',monospace; font-size:0.86rem; color:var(--cyan);
-    min-height:28px; letter-spacing:0.04em; line-height:1.55;
+    text-align:center; min-height:28px; letter-spacing:0.04em;
+    text-shadow:0 0 12px var(--cyan-glow); line-height:1.55;
   }
 
   .wake-btn {
-    display:flex; align-items:center; gap:10px; margin:20px auto 0;
+    display:flex; align-items:center; gap:10px; margin:13px auto 0; width:fit-content;
     background:var(--cyan-dim); border:1px solid var(--cyan); border-radius:40px;
-    padding:12px 25px; font-family:'Orbitron',monospace; color:var(--cyan); cursor:pointer;
+    padding:9px 20px; font-family:'Orbitron',monospace; font-size:0.68rem;
+    color:var(--cyan); cursor:pointer; transition:all 0.2s;
   }
 
-  .convo-panel { background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:18px; margin-bottom:16px; max-height:200px; overflow-y:auto; }
-  .convo-msg { margin-bottom:10px; font-size:0.75rem; }
-  .convo-who.user { color:var(--warn); }
-  .convo-who.spydee { color:var(--cyan); }
+  .convo-panel { background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:18px 20px; margin-bottom:16px; max-height:260px; overflow-y:auto; }
+  .convo-who.user { color:var(--warn); font-family: 'Orbitron'; font-size: 0.6rem; }
+  .convo-who.spydee { color:var(--cyan); font-family: 'Orbitron'; font-size: 0.6rem; }
+  .convo-text { font-size:0.74rem; color:var(--text); margin-bottom: 10px; padding-left: 10px; border-left: 1px solid var(--border); }
 
-  .input-panel { background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:15px; margin-bottom:16px; }
-  .task-input { width:100%; background:rgba(0,245,255,0.05); border:1px solid var(--border); border-radius:8px; color:white; padding:10px; font-family:inherit; }
-  
-  .tasks-panel { background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:18px; }
-  .task-card { background:rgba(0,245,255,0.05); margin-bottom:8px; padding:10px; border-radius:8px; border-left:3px solid var(--cyan); display:flex; justify-content:space-between; }
-  
-  @keyframes spin { to { transform:rotate(360deg); } }
+  .input-panel { background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:18px 20px; margin-bottom:16px; }
+  .task-input { width: 100%; background:rgba(0,245,255,0.04); border:1px solid var(--border); border-radius:10px; padding:10px; color:var(--text); font-family:'Space Mono'; resize:none; outline:none; }
+  .submit-btn { background:var(--cyan-dim); border:1px solid var(--cyan); border-radius:10px; padding:10px 15px; color:var(--cyan); cursor:pointer; margin-top: 10px; }
+
+  .tasks-panel { background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:18px 20px; }
+  .task-card { background:rgba(0,245,255,0.03); border:1px solid var(--border); border-radius:10px; padding:12px; margin-bottom: 10px; border-left: 3px solid var(--cyan); }
 </style>
 </head>
 <body>
@@ -103,11 +95,10 @@
     <div class="clock" id="clock">00:00:00</div>
     <div class="date-str" id="date-str">LOADING...</div>
     <div class="logo-ring">
-        <svg class="spin1" viewBox="0 0 96 96"><circle cx="48" cy="48" r="40" stroke="var(--cyan)" stroke-width="1" fill="none" stroke-dasharray="10 5"/></svg>
-        <div class="logo-icon">S</div>
+      <svg class="spin1" viewBox="0 0 96 96" fill="none"><circle cx="48" cy="48" r="44" stroke="var(--cyan)" stroke-width="1" stroke-dasharray="5 7"/></svg>
+      <div class="logo-icon">S</div>
     </div>
     <h1>SPYDEE</h1>
-    <div id="browser-badge" class="browser-badge native">SYSTEM READY</div>
   </header>
 
   <div class="status-bar">
@@ -116,20 +107,17 @@
   </div>
 
   <div class="voice-panel">
-    <div class="voice-visualizer" id="visualizer">
-      <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-    </div>
-    <div class="spydee-response" id="spydee-response">AWAITING AUTHORIZATION...</div>
-    <button class="wake-btn" id="wake-btn" onclick="initSystem()">
-      <span id="wake-btn-label">INITIALIZE SPYDEE</span>
+    <div class="spydee-response" id="spydee-response">AUTHORIZATION REQUIRED</div>
+    <button class="wake-btn" id="init-btn" onclick="bootSystem()">
+      <span>🎙</span><span id="btn-label">INITIALIZE INTERFACE</span>
     </button>
   </div>
 
   <div class="convo-panel" id="convo-list"></div>
 
   <div class="input-panel">
-    <textarea class="task-input" id="task-input" placeholder="Type a command..."></textarea>
-    <button class="wake-btn" style="margin-top:10px" onclick="processTextInput()">EXECUTE</button>
+    <textarea class="task-input" id="task-input" placeholder="Enter command for Spydee..." rows="2"></textarea>
+    <button class="submit-btn" onclick="processText()">EXECUTE COMMAND</button>
   </div>
 
   <div class="tasks-panel">
@@ -140,135 +128,107 @@
 <script>
 'use strict';
 
-// PRONUNCIATION CONSTANTS
-const USER_NAME_PHONETIC = "Spydarr"; // Becomes "Spider" in Speech
-const SYSTEM_NAME_PHONETIC = "Spydee"; // Becomes "Spidee" in Speech
-
-let tasks = JSON.parse(localStorage.getItem('spydee_tasks_v3') || '[]');
-let groqKey = localStorage.getItem('spydee_groq_key') || '';
-let recognition = null;
-let isListening = false;
 const synth = window.speechSynthesis;
+let tasks = JSON.parse(localStorage.getItem('spydee_tasks_v3') || '[]');
+let recognition = null;
 
-// 1. INITIALIZE SYSTEM (Required for Safari/iOS to unlock audio)
-function initSystem() {
-  const u = new SpeechSynthesisUtterance("System initialized. I am online, " + USER_NAME_PHONETIC);
-  u.rate = 0.9;
-  u.pitch = 0.8;
-  synth.speak(u);
+// PRONUNCIATION ENGINE
+const DISPLAY_USER = "Spydarr";
+const PHONETIC_USER = "Spider";
+const DISPLAY_SELF = "Spydee";
+const PHONETIC_SELF = "Spidee";
+
+function bootSystem() {
+  const intro = `Systems online. I am ${PHONETIC_SELF}. How may I assist you today, ${PHONETIC_USER}?`;
+  speak(intro);
   
-  document.getElementById('wake-btn-label').textContent = "SYSTEM ACTIVE";
-  document.getElementById('spydee-response').textContent = "ONLINE. HOW CAN I HELP, " + USER_NAME_PHONETIC.toUpperCase() + "?";
+  document.getElementById('spydee-response').textContent = `WELCOME BACK, ${DISPLAY_USER}`;
+  document.getElementById('btn-label').textContent = "LISTENING...";
+  document.getElementById('mic-dot').className = "dot on";
   
-  setupRecognition();
+  startListening();
 }
 
-// 2. JARVIS STYLE SPEECH
 function speak(text) {
-  if (!text) return;
   synth.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  // Safari chooses default voices; we set pitch/rate for the Jarvis vibe
-  u.rate = 0.9; 
-  u.pitch = 0.8; 
-  u.volume = 1.0;
+  const utterance = new SpeechSynthesisUtterance(text);
   
-  u.onstart = () => animateBars(true);
-  u.onend = () => animateBars(false);
-  synth.speak(u);
+  // Try to find a high-quality British voice for Jarvis
+  const voices = synth.getVoices();
+  utterance.voice = voices.find(v => v.name.includes('Google UK English Male') || v.name.includes('Daniel') || v.lang === 'en-GB') || voices[0];
+  
+  utterance.rate = 0.95;
+  utterance.pitch = 0.85; 
+  utterance.volume = 1.0;
+  
+  synth.speak(utterance);
 }
 
-function animateBars(active) {
-    const bars = document.querySelectorAll('.bar');
-    bars.forEach(b => {
-        b.style.height = active ? (Math.random() * 40 + 10) + 'px' : '4px';
-    });
-    if(active) setTimeout(() => animateBars(true), 150);
-}
-
-// 3. RECOGNITION SETUP
-function setupRecognition() {
+function startListening() {
   const SpeechR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechR) {
-    alert("Speech recognition not supported on this browser.");
-    return;
-  }
-  
+  if (!SpeechR) return;
+
   recognition = new SpeechR();
   recognition.continuous = true;
   recognition.interimResults = false;
   recognition.lang = 'en-US';
 
-  recognition.onstart = () => {
-    document.getElementById('mic-dot').classList.add('on');
-    document.getElementById('mic-status').textContent = "LISTENING";
-  };
-
   recognition.onresult = (event) => {
     const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
-    handleCommand(transcript);
+    handleInput(transcript);
   };
 
   recognition.start();
 }
 
-// 4. COMMAND LOGIC
-async function handleCommand(input) {
-  addConvo('user', input);
+async function handleInput(input) {
+  addConvo(DISPLAY_USER, input);
   
-  let response = "";
-  
+  let replyText = "";
+  let phoneticReply = "";
+
   if (input.includes("remind") || input.includes("task")) {
-    const task = { id: Date.now(), text: input, done: false, time: new Date() };
-    tasks.push(task);
+    const taskText = input.replace(/remind me to|task/i, "").trim();
+    tasks.push({ id: Date.now(), text: taskText });
     localStorage.setItem('spydee_tasks_v3', JSON.stringify(tasks));
     renderTasks();
-    response = `Of course, ${USER_NAME_PHONETIC}. I've added that to your primary queue.`;
+    
+    replyText = `Certainly, ${DISPLAY_USER}. Task added to the log.`;
+    phoneticReply = `Certainly, ${PHONETIC_USER}. Task added to the log.`;
   } else {
-    response = `Certainly, ${USER_NAME_PHONETIC}. Processing your request for: ${input}.`;
+    replyText = `Processing request, ${DISPLAY_USER}. I'm afraid I'm still calibrating my logic cores for that.`;
+    phoneticReply = `Processing request, ${PHONETIC_USER}. I'm afraid I'm still calibrating my logic cores for that.`;
   }
 
-  document.getElementById('spydee-response').textContent = response.toUpperCase();
-  addConvo('spydee', response);
-  speak(response);
+  document.getElementById('spydee-response').textContent = replyText.toUpperCase();
+  addConvo(DISPLAY_SELF, replyText);
+  speak(phoneticReply);
 }
 
 function addConvo(who, text) {
   const list = document.getElementById('convo-list');
-  const div = document.createElement('div');
-  div.className = `convo-msg`;
-  div.innerHTML = `<span class="convo-who ${who}">${who === 'user' ? 'YOU' : 'SPYDEE'}:</span> ${text}`;
-  list.prepend(div);
+  const msg = document.createElement('div');
+  msg.innerHTML = `<div class="convo-who ${who.toLowerCase()}">${who.toUpperCase()}</div><div class="convo-text">${text}</div>`;
+  list.prepend(msg);
 }
 
 function renderTasks() {
   const list = document.getElementById('task-list');
-  list.innerHTML = tasks.map(t => `
-    <div class="task-card">
-      <span>${t.text}</span>
-      <button onclick="deleteTask(${t.id})" style="background:none; border:none; color:red;">X</button>
-    </div>
-  `).join('');
+  list.innerHTML = tasks.map(t => `<div class="task-card">${t.text}</div>`).join('');
 }
 
-function deleteTask(id) {
-  tasks = tasks.filter(t => t.id !== id);
-  localStorage.setItem('spydee_tasks_v3', JSON.stringify(tasks));
-  renderTasks();
+function processText() {
+  const input = document.getElementById('task-input').value;
+  if(input) {
+    handleInput(input);
+    document.getElementById('task-input').value = "";
+  }
 }
 
-function processTextInput() {
-    const input = document.getElementById('task-input').value;
-    if(input) {
-        handleCommand(input);
-        document.getElementById('task-input').value = "";
-    }
-}
-
-// 5. CLOCK
+// Clock logic
 setInterval(() => {
   const now = new Date();
-  document.getElementById('clock').textContent = now.toLocaleTimeString();
+  document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour12: false });
   document.getElementById('date-str').textContent = now.toDateString().toUpperCase();
 }, 1000);
 
