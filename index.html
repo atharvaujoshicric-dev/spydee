@@ -379,11 +379,13 @@
 
 <script>
 // ── BROWSER DETECTION ─────────────────────────────────────────
-const HAS_NATIVE_SR = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
-const IS_CHROME = /Chrome/.test(navigator.userAgent) && !/Edg/.test(navigator.userAgent);
-const IS_EDGE   = /Edg/.test(navigator.userAgent);
-const IS_SAFARI = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
-const IS_FF     = /Firefox/.test(navigator.userAgent);
+const UA = navigator.userAgent;
+const IS_EDGE   = /Edg\//.test(UA);
+const IS_CHROME = /Chrome/.test(UA) && !IS_EDGE;
+const IS_SAFARI = /Safari/.test(UA) && !/Chrome/.test(UA);
+const IS_FF     = /Firefox/.test(UA);
+const SR_Class  = window.SpeechRecognition || window.webkitSpeechRecognition;
+const HAS_NATIVE_SR = !!SR_Class;
 
 // ── STATE ─────────────────────────────────────────────────────
 let tasks = JSON.parse(localStorage.getItem('spydee_tasks') || '[]');
@@ -459,19 +461,16 @@ function setResponse(text) { document.getElementById('spydee-response').textCont
 // ════════════════════════════════════════════════════════════
 // NATIVE MODE — Chrome / Edge (continuous always-on)
 // ════════════════════════════════════════════════════════════
-function initNativeMode() {
-  document.getElementById('browser-badge').className = 'browser-badge native';
-  document.getElementById('browser-badge').textContent = '● CHROME / EDGE — ALWAYS-ON VOICE ACTIVE';
-  document.getElementById('voice-label').textContent = '// VOICE INTERFACE — ALWAYS ACTIVE · SAY "HEY SPYDEE" TO COMMAND';
-  document.getElementById('wake-btn').style.display = 'flex';
+let srRestartTimer = null;
+let micUnlocked = false; // Edge requires a user gesture before mic access
 
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SR();
-  recognition.continuous = true;
-  recognition.interimResults = true;
-  recognition.lang = 'en-US';
+function buildRecognition() {
+  const r = new SR_Class();
+  r.continuous = true;
+  r.interimResults = true;
+  r.lang = 'en-US';
 
-  recognition.onresult = (event) => {
+  r.onresult = (event) => {
     let interim = '', final = '';
     for (let i = event.resultIndex; i < event.results.length; i++) {
       const t = event.results[i][0].transcript.toLowerCase().trim();
@@ -497,49 +496,106 @@ function initNativeMode() {
       }
     }
   };
-  recognition.onerror = (e) => {
+
+  r.onerror = (e) => {
     if (e.error === 'not-allowed') {
       setResponse('MIC BLOCKED — ALLOW MICROPHONE IN BROWSER SETTINGS');
       document.getElementById('mic-dot').className = 'dot off';
       document.getElementById('mic-status').textContent = 'MIC BLOCKED';
+      isListening = false;
+      setNativeBtnMuted();
+    } else if (e.error === 'network') {
+      // Edge sometimes throws 'network' — just restart silently
     }
+    // All other errors: onend will restart
   };
-  recognition.onend = () => { if (isListening) { try { recognition.start(); } catch(e){} } };
 
-  // Auto-start
+  // Robust restart: Edge stops recognition more aggressively than Chrome
+  r.onend = () => {
+    if (!isListening) return;
+    // Small delay prevents rapid-fire restart loop
+    srRestartTimer = setTimeout(() => {
+      if (!isListening) return;
+      try { recognition.start(); } catch(err) {
+        // Already started or other transient error — retry after longer delay
+        srRestartTimer = setTimeout(() => {
+          if (isListening) try { recognition.start(); } catch(e2) {}
+        }, 1000);
+      }
+    }, 150);
+  };
+
+  return r;
+}
+
+function setNativeBtnActive() {
+  document.getElementById('wake-btn').classList.add('active');
+  document.getElementById('wake-btn-label').textContent = 'ALWAYS LISTENING';
+  document.getElementById('mic-dot').className = 'dot on';
+  document.getElementById('mic-status').textContent = 'MIC ACTIVE';
+  document.getElementById('visualizer').classList.add('listening');
+}
+function setNativeBtnMuted() {
+  document.getElementById('wake-btn').classList.remove('active');
+  document.getElementById('wake-btn-label').textContent = 'CLICK TO ACTIVATE MIC';
+  document.getElementById('mic-dot').className = 'dot warn';
+  document.getElementById('mic-status').textContent = 'MIC INACTIVE';
+  document.getElementById('visualizer').classList.remove('listening');
+}
+
+function startNativeSR() {
+  if (!recognition) recognition = buildRecognition();
   isListening = true;
   try {
     recognition.start();
-    document.getElementById('wake-btn').classList.add('active');
-    document.getElementById('mic-dot').className = 'dot on';
-    document.getElementById('mic-status').textContent = 'MIC ACTIVE';
-    document.getElementById('visualizer').classList.add('listening');
+    setNativeBtnActive();
     setResponse('MONITORING FOR "HEY SPYDEE"...');
+    micUnlocked = true;
   } catch(e) {
+    // Already running (Edge quirk) — treat as success
+    if (e.name === 'InvalidStateError') {
+      setNativeBtnActive();
+      setResponse('MONITORING FOR "HEY SPYDEE"...');
+      micUnlocked = true;
+    } else {
+      isListening = false;
+      setResponse('CLICK THE MIC BUTTON TO ACTIVATE VOICE');
+    }
+  }
+}
+
+function initNativeMode() {
+  const badge = document.getElementById('browser-badge');
+  badge.className = 'browser-badge native';
+  badge.textContent = IS_EDGE ? '● MICROSOFT EDGE — ALWAYS-ON VOICE ACTIVE' : '● CHROME — ALWAYS-ON VOICE ACTIVE';
+  document.getElementById('voice-label').textContent = '// VOICE INTERFACE — ALWAYS ACTIVE · SAY "HEY SPYDEE" TO COMMAND';
+  document.getElementById('wake-btn').style.display = 'flex';
+
+  recognition = buildRecognition();
+
+  // Edge blocks autostart without user gesture — show a prompt and wait for click
+  // Chrome allows autostart immediately
+  if (IS_EDGE) {
     setResponse('CLICK THE MIC BUTTON TO ACTIVATE VOICE');
+    setNativeBtnMuted();
+    document.getElementById('wake-btn-label').textContent = 'CLICK TO ACTIVATE MIC';
+    // Will start on first toggleListening() click
+  } else {
+    startNativeSR();
   }
 }
 
 function toggleListening() {
   if (!recognition) return;
-  isListening = !isListening;
-  const btn = document.getElementById('wake-btn');
-  const label = document.getElementById('wake-btn-label');
-  const micDot = document.getElementById('mic-dot');
-  const viz = document.getElementById('visualizer');
-  if (isListening) {
-    try { recognition.start(); } catch(e){}
-    btn.classList.add('active'); label.textContent = 'ALWAYS LISTENING';
-    micDot.className = 'dot on';
-    document.getElementById('mic-status').textContent = 'MIC ACTIVE';
-    viz.classList.add('listening');
-    setResponse('MONITORING FOR "HEY SPYDEE"...');
+  if (!isListening) {
+    startNativeSR();
   } else {
-    recognition.stop();
-    btn.classList.remove('active'); label.textContent = 'MIC MUTED — CLICK TO RESUME';
-    micDot.className = 'dot warn';
+    isListening = false;
+    clearTimeout(srRestartTimer);
+    try { recognition.stop(); } catch(e) {}
+    setNativeBtnMuted();
+    document.getElementById('wake-btn-label').textContent = 'MIC MUTED — CLICK TO RESUME';
     document.getElementById('mic-status').textContent = 'MIC MUTED';
-    viz.classList.remove('listening');
     setResponse('MIC MUTED. CLICK TO RESUME.');
     document.getElementById('voice-overlay').classList.remove('show');
     commandMode = false;
@@ -885,7 +941,11 @@ initReminders();
 setTimeout(() => {
   if (HAS_NATIVE_SR) {
     initNativeMode();
-    showToast('SPYDEE ONLINE', 'Always-on voice active. Say "Hey Spydee" anytime to give a command.');
+    if (IS_EDGE) {
+      showToast('SPYDEE ONLINE', 'Click the mic button once to activate voice on Edge, then say "Hey Spydee" anytime.');
+    } else {
+      showToast('SPYDEE ONLINE', 'Always-on voice active. Say "Hey Spydee" anytime to give a command.');
+    }
   } else {
     initFallbackMode();
     showToast('SPYDEE ONLINE', 'Push-to-talk ready. Hold the mic button and speak your command.');
