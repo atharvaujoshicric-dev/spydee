@@ -36,203 +36,1035 @@
       linear-gradient(90deg, rgba(0,245,255,0.025) 1px, transparent 1px);
     background-size: 48px 48px; pointer-events:none; z-index:0;
   }
+  body::after {
+    content:''; position:fixed; inset:0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,100,255,0.07) 0%, transparent 70%);
+    pointer-events:none; z-index:0;
+  }
 
   .app { position:relative; z-index:1; max-width:920px; margin:0 auto; padding:24px 20px 80px; }
 
   header { text-align:center; padding:28px 0 22px; }
+  .time-display { margin-bottom:12px; }
   .clock { font-family:'Orbitron',monospace; font-size:2.8rem; font-weight:700; color:var(--cyan); text-shadow:0 0 24px var(--cyan-glow); letter-spacing:0.06em; }
   .date-str { font-size:0.65rem; color:var(--muted); letter-spacing:0.22em; margin-top:4px; }
 
   .logo-ring { width:96px; height:96px; margin:12px auto 14px; position:relative; display:flex; align-items:center; justify-content:center; }
   .logo-ring svg { position:absolute; inset:0; }
   .logo-ring .spin1 { animation:spin 10s linear infinite; }
-  .logo-icon { font-family:'Orbitron',monospace; font-weight:900; font-size:26px; color:var(--cyan); text-shadow:0 0 24px var(--cyan-glow); position:relative; z-index:2; }
+  .logo-ring .spin2 { animation:spin 16s linear infinite reverse; }
+  .logo-ring .spin3 { animation:spin 6s linear infinite; }
   @keyframes spin { to { transform:rotate(360deg); } }
+  .logo-icon { font-family:'Orbitron',monospace; font-weight:900; font-size:26px; color:var(--cyan); text-shadow:0 0 24px var(--cyan-glow),0 0 48px rgba(0,245,255,0.2); position:relative; z-index:2; }
 
-  h1 { font-family:'Orbitron',monospace; font-size:2.4rem; font-weight:900; letter-spacing:0.14em; color:var(--cyan); text-shadow:0 0 32px var(--cyan-glow); }
+  h1 { font-family:'Orbitron',monospace; font-size:2.4rem; font-weight:900; letter-spacing:0.14em; color:var(--cyan); text-shadow:0 0 32px var(--cyan-glow),0 0 64px rgba(0,245,255,0.12); }
+  .tagline { font-size:0.68rem; color:var(--muted); letter-spacing:0.32em; margin-top:5px; }
 
+  .browser-badge {
+    display:inline-flex; align-items:center; gap:7px; margin-top:12px;
+    font-family:'Orbitron',monospace; font-size:0.58rem; letter-spacing:0.12em;
+    padding:5px 14px; border-radius:20px; border:1px solid;
+  }
+  .browser-badge.native  { color:var(--success); border-color:rgba(0,255,136,0.3); background:rgba(0,255,136,0.06); }
+  .browser-badge.fallback{ color:var(--warn);    border-color:rgba(255,170,0,0.3);  background:rgba(255,170,0,0.06); }
+
+  /* STATUS BAR */
   .status-bar { display:flex; align-items:center; justify-content:center; gap:18px; margin:18px 0 22px; flex-wrap:wrap; }
-  .status-dot { display:flex; align-items:center; gap:7px; font-size:0.63rem; color:var(--muted); }
-  .dot { width:7px; height:7px; border-radius:50%; background:var(--muted); }
-  .dot.on { background:var(--success); box-shadow:0 0 8px var(--success); }
+  .status-dot { display:flex; align-items:center; gap:7px; font-size:0.63rem; color:var(--muted); letter-spacing:0.1em; }
+  .dot { width:7px; height:7px; border-radius:50%; background:var(--muted); flex-shrink:0; }
+  .dot.on   { background:var(--success); box-shadow:0 0 8px var(--success); animation:pdot 2s ease-in-out infinite; }
+  .dot.warn { background:var(--warn);    box-shadow:0 0 8px var(--warn); }
+  .dot.off  { background:var(--danger);  box-shadow:0 0 8px var(--danger); }
+  @keyframes pdot { 0%,100%{opacity:1} 50%{opacity:0.45} }
 
+  /* API SETUP */
+  .setup-panel {
+    background: rgba(255,215,0,0.04); border:1px solid rgba(255,215,0,0.22);
+    border-radius:14px; padding:18px 20px; margin-bottom:16px; backdrop-filter:blur(10px);
+  }
+  .setup-label { font-family:'Orbitron',monospace; font-size:0.58rem; letter-spacing:0.25em; color:var(--gold); margin-bottom:11px; }
+  .setup-row { display:flex; gap:10px; align-items:center; }
+  .api-input {
+    flex:1; background:rgba(255,215,0,0.05); border:1px solid rgba(255,215,0,0.18);
+    border-radius:8px; padding:9px 13px; font-family:'Space Mono',monospace;
+    font-size:0.78rem; color:var(--text); outline:none; transition:border-color 0.2s;
+  }
+  .api-input:focus { border-color:var(--gold); }
+  .api-input::placeholder { color:var(--muted); }
+  .api-save-btn {
+    background:rgba(255,215,0,0.1); border:1px solid rgba(255,215,0,0.35);
+    border-radius:8px; padding:9px 15px; color:var(--gold);
+    font-family:'Orbitron',monospace; font-size:0.6rem; letter-spacing:0.1em;
+    cursor:pointer; transition:all 0.2s; white-space:nowrap;
+  }
+  .api-save-btn:hover { background:rgba(255,215,0,0.18); }
+  .api-status { font-size:0.63rem; color:var(--muted); margin-top:8px; }
+  .api-status.ok  { color:var(--success); }
+  .api-status.err { color:var(--danger); }
+
+  /* VOICE PANEL */
   .voice-panel {
     background:var(--panel); border:1px solid var(--border);
     border-radius:16px; padding:24px; margin-bottom:16px;
     backdrop-filter:blur(12px); position:relative; overflow:hidden;
   }
+  .voice-panel::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(0,245,255,0.03) 0%,transparent 55%); pointer-events:none; }
+  .voice-label { font-family:'Orbitron',monospace; font-size:0.58rem; letter-spacing:0.25em; color:var(--muted); margin-bottom:13px; }
+
+  .voice-visualizer { display:flex; align-items:flex-end; justify-content:center; gap:3px; height:52px; margin:13px 0; }
+  .bar { width:4px; background:var(--cyan); border-radius:2px; opacity:0.22; height:4px; transition:height 0.07s; }
+  @keyframes bp { 0%,100%{height:4px} 50%{height:38px} }
+  .vis-listen .bar { animation:bp 1.3s ease-in-out infinite; opacity:0.5; }
+  .vis-listen .bar:nth-child(odd) { animation-duration:1.5s; }
+  .vis-listen .bar:nth-child(3n)  { animation-duration:1.0s; }
+  .vis-wake   .bar { animation:bp 0.4s ease-in-out infinite; opacity:1; background:var(--gold); }
+  .vis-think  .bar { animation:bp 0.7s ease-in-out infinite; opacity:0.85; background:var(--warn); }
+  .vis-speak  .bar { animation:bp 0.5s ease-in-out infinite; opacity:1; background:var(--success); }
+  .vis-record .bar { animation:bp 0.28s ease-in-out infinite; opacity:1; background:var(--danger); }
 
   .spydee-response {
     font-family:'Orbitron',monospace; font-size:0.86rem; color:var(--cyan);
     text-align:center; min-height:28px; letter-spacing:0.04em;
-    text-shadow:0 0 12px var(--cyan-glow); line-height:1.55;
+    text-shadow:0 0 12px var(--cyan-glow); line-height:1.55; padding:0 8px;
   }
+  .typing-cursor::after { content:'▌'; animation:blink 0.7s step-end infinite; color:var(--gold); }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
   .wake-btn {
     display:flex; align-items:center; gap:10px; margin:13px auto 0; width:fit-content;
     background:var(--cyan-dim); border:1px solid var(--cyan); border-radius:40px;
     padding:9px 20px; font-family:'Orbitron',monospace; font-size:0.68rem;
-    color:var(--cyan); cursor:pointer; transition:all 0.2s;
+    letter-spacing:0.12em; color:var(--cyan); cursor:pointer; transition:all 0.2s;
   }
+  .wake-btn:hover { background:rgba(0,245,255,0.22); }
+  .wake-btn.active { box-shadow:0 0 20px var(--cyan-glow),inset 0 0 10px rgba(0,245,255,0.08); }
+  .wake-btn.wake-active { animation:wakepulse 0.75s ease-in-out infinite; }
+  @keyframes wakepulse { 0%,100%{box-shadow:0 0 18px var(--cyan-glow)} 50%{box-shadow:0 0 50px var(--cyan-glow),0 0 80px rgba(0,245,255,0.25)} }
 
-  .convo-panel { background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:18px 20px; margin-bottom:16px; max-height:260px; overflow-y:auto; }
-  .convo-who.user { color:var(--warn); font-family: 'Orbitron'; font-size: 0.6rem; }
-  .convo-who.spydee { color:var(--cyan); font-family: 'Orbitron'; font-size: 0.6rem; }
-  .convo-text { font-size:0.74rem; color:var(--text); margin-bottom: 10px; padding-left: 10px; border-left: 1px solid var(--border); }
+  .ptt-section { display:none; flex-direction:column; align-items:center; gap:12px; margin-top:13px; }
+  .ptt-btn { width:70px; height:70px; border-radius:50%; background:rgba(255,68,102,0.1); border:2px solid var(--danger); color:var(--danger); font-size:26px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.15s; user-select:none; -webkit-user-select:none; }
+  .ptt-btn:hover { background:rgba(255,68,102,0.2); }
+  .ptt-btn.recording { background:rgba(255,68,102,0.32); box-shadow:0 0 22px rgba(255,68,102,0.5); transform:scale(1.08); }
+  .ptt-hint { font-family:'Orbitron',monospace; font-size:0.57rem; letter-spacing:0.15em; color:var(--muted); text-align:center; }
+  .ptt-transcript { font-size:0.72rem; color:var(--text); text-align:center; min-height:18px; opacity:0.7; font-style:italic; max-width:420px; line-height:1.5; }
 
-  .input-panel { background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:18px 20px; margin-bottom:16px; }
-  .task-input { width: 100%; background:rgba(0,245,255,0.04); border:1px solid var(--border); border-radius:10px; padding:10px; color:var(--text); font-family:'Space Mono'; resize:none; outline:none; }
-  .submit-btn { background:var(--cyan-dim); border:1px solid var(--cyan); border-radius:10px; padding:10px 15px; color:var(--cyan); cursor:pointer; margin-top: 10px; }
+  .usage-box { background:rgba(0,245,255,0.03); border:1px solid rgba(0,245,255,0.09); border-radius:10px; padding:12px 15px; margin-top:13px; }
+  .usage-row { display:flex; align-items:flex-start; gap:10px; margin-bottom:7px; font-size:0.67rem; line-height:1.6; }
+  .usage-row:last-child { margin-bottom:0; }
+  .usage-key { font-family:'Orbitron',monospace; font-size:0.57rem; color:var(--cyan); background:var(--cyan-dim); border:1px solid var(--border); padding:2px 7px; border-radius:4px; white-space:nowrap; flex-shrink:0; margin-top:2px; }
+  .usage-val { color:var(--muted); }
+  .usage-val span { color:var(--text); }
 
-  .tasks-panel { background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:18px 20px; }
-  .task-card { background:rgba(0,245,255,0.03); border:1px solid var(--border); border-radius:10px; padding:12px; margin-bottom: 10px; border-left: 3px solid var(--cyan); }
+  /* CONVERSATION LOG */
+  .convo-panel { background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:18px 20px; margin-bottom:16px; backdrop-filter:blur(12px); max-height:260px; overflow-y:auto; }
+  .convo-label { font-family:'Orbitron',monospace; font-size:0.58rem; letter-spacing:0.25em; color:var(--muted); margin-bottom:11px; }
+  .convo-empty { font-size:0.68rem; color:var(--muted); text-align:center; padding:18px 0; letter-spacing:0.1em; }
+  .convo-msg { margin-bottom:11px; }
+  .convo-who { font-family:'Orbitron',monospace; font-size:0.57rem; letter-spacing:0.12em; margin-bottom:3px; }
+  .convo-who.user   { color:var(--warn); }
+  .convo-who.spydee { color:var(--cyan); }
+  .convo-text { font-size:0.74rem; color:var(--text); line-height:1.65; padding-left:10px; border-left:2px solid; }
+  .convo-msg.user   .convo-text { border-color:rgba(255,170,0,0.3); }
+  .convo-msg.spydee .convo-text { border-color:rgba(0,245,255,0.3); }
+
+  /* INPUT */
+  .input-panel { background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:18px 20px; margin-bottom:16px; backdrop-filter:blur(12px); }
+  .input-label { font-family:'Orbitron',monospace; font-size:0.58rem; letter-spacing:0.25em; color:var(--muted); margin-bottom:11px; }
+  .input-row { display:flex; gap:10px; align-items:flex-start; }
+  .task-input { flex:1; background:rgba(0,245,255,0.04); border:1px solid var(--border); border-radius:10px; padding:10px 14px; font-family:'Space Mono',monospace; font-size:0.78rem; color:var(--text); resize:none; outline:none; transition:border-color 0.2s; min-height:68px; }
+  .task-input::placeholder { color:var(--muted); }
+  .task-input:focus { border-color:var(--cyan); }
+  .submit-btn { background:var(--cyan-dim); border:1px solid var(--cyan); border-radius:10px; padding:10px 15px; color:var(--cyan); font-family:'Orbitron',monospace; font-size:0.63rem; letter-spacing:0.1em; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+  .submit-btn:hover { background:rgba(0,245,255,0.22); }
+  .submit-btn:active { transform:scale(0.97); }
+  .hint { font-size:0.64rem; color:var(--muted); margin-top:8px; line-height:1.6; }
+  .hint span { color:var(--cyan); opacity:0.7; }
+
+  /* TASKS */
+  .tasks-panel { background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:18px 20px; backdrop-filter:blur(12px); }
+  .panel-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:13px; }
+  .panel-title { font-family:'Orbitron',monospace; font-size:0.58rem; letter-spacing:0.25em; color:var(--muted); }
+  .task-count { font-family:'Orbitron',monospace; font-size:0.58rem; color:var(--cyan); background:var(--cyan-dim); border:1px solid var(--border); padding:3px 10px; border-radius:20px; }
+  .task-list { display:flex; flex-direction:column; gap:9px; }
+  .empty-state { text-align:center; padding:26px 0; color:var(--muted); font-size:0.68rem; letter-spacing:0.1em; line-height:2.2; }
+  .filter-tabs { display:flex; gap:8px; margin-bottom:13px; flex-wrap:wrap; }
+  .filter-tab { font-family:'Orbitron',monospace; font-size:0.57rem; letter-spacing:0.1em; padding:5px 13px; border-radius:20px; border:1px solid var(--border); background:none; color:var(--muted); cursor:pointer; transition:all 0.2s; }
+  .filter-tab.active { background:var(--cyan-dim); border-color:var(--cyan); color:var(--cyan); }
+
+  .task-card { background:rgba(0,245,255,0.03); border:1px solid var(--border); border-radius:10px; padding:12px 14px; display:flex; align-items:flex-start; gap:11px; position:relative; overflow:hidden; transition:border-color 0.2s; }
+  .task-card:hover { border-color:rgba(0,245,255,0.28); }
+  .task-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--cyan); opacity:0.4; }
+  .task-card.urgent::before { background:var(--danger); opacity:1; }
+  .task-card.soon::before   { background:var(--warn);   opacity:1; }
+  .task-card.done { opacity:0.36; }
+  .task-card.done::before { background:var(--success); opacity:0.4; }
+
+  .task-check { width:17px; height:17px; border:1px solid var(--border); border-radius:4px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; transition:all 0.2s; }
+  .task-check:hover { border-color:var(--cyan); }
+  .task-check.checked { background:var(--success); border-color:var(--success); }
+  .checkmark { font-size:10px; color:var(--dark); display:none; }
+  .task-check.checked .checkmark { display:block; }
+  .task-body { flex:1; min-width:0; }
+  .task-text { font-size:0.78rem; color:var(--text); line-height:1.5; word-break:break-word; }
+  .task-card.done .task-text { text-decoration:line-through; color:var(--muted); }
+  .task-meta { display:flex; align-items:center; gap:8px; margin-top:5px; flex-wrap:wrap; }
+  .task-time { font-size:0.6rem; color:var(--muted); }
+  .task-badge { font-family:'Orbitron',monospace; font-size:0.54rem; letter-spacing:0.1em; padding:2px 6px; border-radius:4px; border:1px solid; }
+  .badge-urgent { color:var(--danger); border-color:rgba(255,68,102,0.3);  background:rgba(255,68,102,0.07); }
+  .badge-soon   { color:var(--warn);   border-color:rgba(255,170,0,0.3);   background:rgba(255,170,0,0.07); }
+  .badge-later  { color:var(--muted);  border-color:var(--border); }
+  .badge-done   { color:var(--success);border-color:rgba(0,255,136,0.3);   background:rgba(0,255,136,0.07); }
+  .task-del { background:none; border:none; color:var(--muted); cursor:pointer; font-size:14px; padding:0; opacity:0; transition:opacity 0.2s,color 0.2s; flex-shrink:0; }
+  .task-card:hover .task-del { opacity:1; }
+  .task-del:hover { color:var(--danger); }
+
+  /* TOAST */
+  .toast-container { position:fixed; top:16px; right:16px; z-index:9999; display:flex; flex-direction:column; gap:9px; pointer-events:none; }
+  .toast { background:rgba(4,8,20,0.97); border:1px solid var(--cyan); border-radius:12px; padding:12px 15px; max-width:295px; box-shadow:0 0 26px rgba(0,245,255,0.16); animation:slidein 0.26s ease; pointer-events:all; }
+  .toast.reminder-toast { border-color:var(--warn); box-shadow:0 0 26px rgba(255,170,0,0.26); }
+  @keyframes slidein  { from{transform:translateX(110%);opacity:0} to{transform:translateX(0);opacity:1} }
+  @keyframes slideout { from{transform:translateX(0);opacity:1} to{transform:translateX(110%);opacity:0} }
+  .toast.out { animation:slideout 0.26s ease forwards; }
+  .toast-title { font-family:'Orbitron',monospace; font-size:0.66rem; color:var(--cyan); letter-spacing:0.1em; margin-bottom:4px; }
+  .reminder-toast .toast-title { color:var(--warn); }
+  .toast-body  { font-size:0.7rem; color:var(--text); line-height:1.5; }
+  .toast-dismiss { font-family:'Orbitron',monospace; font-size:0.57rem; color:var(--muted); cursor:pointer; margin-top:7px; display:block; }
+  .toast-dismiss:hover { color:var(--cyan); }
+
+  #voice-overlay { display:none; position:fixed; inset:0; border:3px solid transparent; z-index:100; pointer-events:none; animation:bglow 0.9s ease-in-out infinite; }
+  @keyframes bglow { 0%,100%{border-color:rgba(0,245,255,0.1)} 50%{border-color:rgba(0,245,255,0.46)} }
+  #voice-overlay.show { display:block; }
+
+  ::-webkit-scrollbar { width:4px; }
+  ::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
 </style>
 </head>
 <body>
 
+<div id="voice-overlay"></div>
+<div class="toast-container" id="toasts"></div>
+
 <div class="app">
+
   <header>
-    <div class="clock" id="clock">00:00:00</div>
-    <div class="date-str" id="date-str">LOADING...</div>
+    <div class="time-display">
+      <div class="clock" id="clock">00:00:00</div>
+      <div class="date-str" id="date-str">LOADING...</div>
+    </div>
     <div class="logo-ring">
-      <svg class="spin1" viewBox="0 0 96 96" fill="none"><circle cx="48" cy="48" r="44" stroke="var(--cyan)" stroke-width="1" stroke-dasharray="5 7"/></svg>
+      <svg class="spin1" viewBox="0 0 96 96" fill="none"><circle cx="48" cy="48" r="44" stroke="rgba(0,245,255,0.18)" stroke-width="1" stroke-dasharray="5 7"/></svg>
+      <svg class="spin2" viewBox="0 0 96 96" fill="none"><circle cx="48" cy="48" r="40" stroke="rgba(0,245,255,0.45)" stroke-width="0.6" stroke-dasharray="14 5"/></svg>
+      <svg class="spin3" viewBox="0 0 96 96" fill="none"><circle cx="48" cy="48" r="34" stroke="rgba(0,128,255,0.25)" stroke-width="0.5" stroke-dasharray="3 10"/></svg>
       <div class="logo-icon">S</div>
     </div>
     <h1>SPYDEE</h1>
+    <div class="tagline">PERSONAL INTELLIGENCE SYSTEM · v3.0</div>
+    <div id="browser-badge" class="browser-badge native">● DETECTING ENVIRONMENT...</div>
   </header>
 
   <div class="status-bar">
     <div class="status-dot"><div class="dot on"></div>SYSTEMS NOMINAL</div>
     <div class="status-dot"><div class="dot" id="mic-dot"></div><span id="mic-status">MIC STANDBY</span></div>
+    <div class="status-dot"><div class="dot" id="notif-dot"></div><span id="notif-status">NOTIFICATIONS</span></div>
+    <div class="status-dot"><div class="dot" id="ai-dot"></div><span id="ai-status">AI OFFLINE</span></div>
+    <div class="status-dot"><div class="dot on"></div><span id="task-status">0 TASKS</span></div>
   </div>
 
+  <!-- GROQ API KEY -->
+  <div class="setup-panel">
+    <div class="setup-label">// GROQ AI ENGINE — ENTER API KEY TO ACTIVATE FULL INTELLIGENCE</div>
+    <div class="setup-row">
+      <input class="api-input" id="api-key-input" type="password" placeholder="gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off"/>
+      <button class="api-save-btn" onclick="saveApiKey()">ACTIVATE ▶</button>
+    </div>
+    <div class="api-status" id="api-status">Free key at console.groq.com · stored in your browser only, never transmitted elsewhere</div>
+  </div>
+
+  <!-- VOICE PANEL -->
   <div class="voice-panel">
-    <div class="spydee-response" id="spydee-response">AUTHORIZATION REQUIRED</div>
-    <button class="wake-btn" id="init-btn" onclick="bootSystem()">
-      <span>🎙</span><span id="btn-label">INITIALIZE INTERFACE</span>
+    <div class="voice-label" id="voice-label">// VOICE INTERFACE — INITIALIZING</div>
+    <div class="voice-visualizer" id="visualizer">
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+    </div>
+    <div class="spydee-response" id="spydee-response">INITIALIZING SYSTEMS...</div>
+
+    <button class="wake-btn" id="wake-btn" onclick="toggleMute()" style="display:none">
+      <span>🎙</span><span id="wake-btn-label">CLICK TO ACTIVATE</span>
     </button>
+
+    <div class="ptt-section" id="ptt-section">
+      <div class="ptt-btn" id="ptt-btn">🎙</div>
+      <div class="ptt-hint" id="ptt-hint">HOLD TO SPEAK · RELEASE TO SEND</div>
+      <div class="ptt-transcript" id="ptt-transcript"></div>
+    </div>
+
+    <div class="usage-box">
+      <div class="usage-row">
+        <span class="usage-key">WAKE WORD</span>
+        <span class="usage-val">Say <span>"Hey Spydee"</span> — spoken as <span>"Hey Spidee"</span></span>
+      </div>
+      <div class="usage-row">
+        <span class="usage-key">REMINDER</span>
+        <span class="usage-val"><span>"Hey Spydee, remind me to call mom in 30 minutes"</span></span>
+      </div>
+      <div class="usage-row">
+        <span class="usage-key">TASK</span>
+        <span class="usage-val"><span>"Hey Spydee, gym tomorrow at 7am"</span></span>
+      </div>
+      <div class="usage-row">
+        <span class="usage-key">ANYTHING</span>
+        <span class="usage-val"><span>"Hey Spydee, what should I focus on today?"</span> — Spydee will reply</span>
+      </div>
+    </div>
   </div>
 
-  <div class="convo-panel" id="convo-list"></div>
+  <!-- CONVERSATION LOG -->
+  <div class="convo-panel">
+    <div class="convo-label">// CONVERSATION LOG</div>
+    <div id="convo-list"><div class="convo-empty">◈ NO CONVERSATIONS YET</div></div>
+  </div>
 
+  <!-- TEXT INPUT -->
   <div class="input-panel">
-    <textarea class="task-input" id="task-input" placeholder="Enter command for Spydee..." rows="2"></textarea>
-    <button class="submit-btn" onclick="processText()">EXECUTE COMMAND</button>
+    <div class="input-label">// TEXT INTERFACE — TYPE YOUR COMMAND OR QUESTION</div>
+    <div class="input-row">
+      <textarea class="task-input" id="task-input" placeholder='e.g. "Remind me to take meds in 30 minutes"  or  "What should I focus on today?"' rows="3"></textarea>
+      <button class="submit-btn" onclick="processTextInput()">EXECUTE<br>▶</button>
+    </div>
+    <div class="hint">Press <span>Enter</span> to submit · <span>Shift+Enter</span> for new line</div>
   </div>
 
+  <!-- TASKS -->
   <div class="tasks-panel">
-    <div id="task-list"></div>
+    <div class="panel-header">
+      <div class="panel-title">// TASK QUEUE</div>
+      <div class="task-count" id="task-count">0 ACTIVE</div>
+    </div>
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="setFilter('all',this)">ALL</button>
+      <button class="filter-tab" onclick="setFilter('pending',this)">PENDING</button>
+      <button class="filter-tab" onclick="setFilter('done',this)">COMPLETED</button>
+    </div>
+    <div class="task-list" id="task-list">
+      <div class="empty-state">◈ NO TASKS IN QUEUE<br>SPEAK OR TYPE A COMMAND TO BEGIN</div>
+    </div>
   </div>
+
 </div>
 
 <script>
 'use strict';
 
-const synth = window.speechSynthesis;
-let tasks = JSON.parse(localStorage.getItem('spydee_tasks_v3') || '[]');
-let recognition = null;
+// ────────────────────────────────────────────────────────────
+// PRONUNCIATION KEYS
+//   Display name : SPYDEE
+//   TTS wake word: "Spydee"  → browser hears & speaks as "Spidee"
+//   TTS user name: "Spyder"  → TTS speaks as "Spider"
+//   (We spell it "Spyder" not "Spydarr" — both produce "Spider" in TTS,
+//    but "Spyder" is cleaner and more reliably pronounced correctly.)
+// ────────────────────────────────────────────────────────────
+const TTS_USER_NAME  = 'Spyder';   // TTS says "Spider" — how Spydee addresses user
+const TTS_SELF_NAME  = 'Spydee';   // TTS says "Spidee" — how Spydee refers to itself
 
-// PRONUNCIATION ENGINE
-const DISPLAY_USER = "Spydarr";
-const PHONETIC_USER = "Spider";
-const DISPLAY_SELF = "Spydee";
-const PHONETIC_SELF = "Spidee";
+const SR_CLASS  = window.SpeechRecognition || window.webkitSpeechRecognition;
+const HAS_SR    = !!SR_CLASS;
+const IS_EDGE   = /Edg\//.test(navigator.userAgent);
+const IS_FF     = /Firefox\//.test(navigator.userAgent);
+const IS_SAFARI = /Safari\//.test(navigator.userAgent) && !/Chrome\//.test(navigator.userAgent);
 
-function bootSystem() {
-  const intro = `Systems online. I am ${PHONETIC_SELF}. How may I assist you today, ${PHONETIC_USER}?`;
-  speak(intro);
-  
-  document.getElementById('spydee-response').textContent = `WELCOME BACK, ${DISPLAY_USER}`;
-  document.getElementById('btn-label').textContent = "LISTENING...";
-  document.getElementById('mic-dot').className = "dot on";
-  
-  startListening();
+let tasks               = JSON.parse(localStorage.getItem('spydee_tasks_v3') || '[]');
+let filterMode          = 'all';
+let reminderTimers      = {};
+let conversationHistory = [];
+
+// SR
+let recognition = null, srRunning = false, muted = false, restartTimer = null;
+
+// PTT
+let pttActive = false, pttStream = null, pttRec = null, pttChunks = [];
+let audioCtx = null, analyser = null, vizRAF = null;
+
+// ────────────────────────────────────────────────────────────
+// GROQ
+// ────────────────────────────────────────────────────────────
+let groqKey = localStorage.getItem('spydee_groq_key') || '';
+
+function saveApiKey() {
+  const val = document.getElementById('api-key-input').value.trim();
+  if (!val) return;
+  groqKey = val;
+  localStorage.setItem('spydee_groq_key', val);
+  verifyGroqKey();
 }
 
-function speak(text) {
-  synth.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  
-  // Try to find a high-quality British voice for Jarvis
-  const voices = synth.getVoices();
-  utterance.voice = voices.find(v => v.name.includes('Google UK English Male') || v.name.includes('Daniel') || v.lang === 'en-GB') || voices[0];
-  
-  utterance.rate = 0.95;
-  utterance.pitch = 0.85; 
-  utterance.volume = 1.0;
-  
-  synth.speak(utterance);
+async function verifyGroqKey() {
+  const el = document.getElementById('api-status');
+  if (!groqKey) { el.textContent = 'No API key — running in task-only mode.'; el.className = 'api-status'; setAiStatus(false); return; }
+  el.textContent = 'Verifying connection...';
+  el.className = 'api-status';
+  try {
+    await callGroq([{role:'user', content:'Reply with the single word: ONLINE'}], 10);
+    el.textContent = '✓ Groq connected — AI intelligence active';
+    el.className = 'api-status ok';
+    setAiStatus(true);
+  } catch(e) {
+    el.textContent = '✗ ' + e.message;
+    el.className = 'api-status err';
+    setAiStatus(false);
+  }
 }
 
-function startListening() {
-  const SpeechR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechR) return;
-
-  recognition = new SpeechR();
-  recognition.continuous = true;
-  recognition.interimResults = false;
-  recognition.lang = 'en-US';
-
-  recognition.onresult = (event) => {
-    const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
-    handleInput(transcript);
-  };
-
-  recognition.start();
+function setAiStatus(ok) {
+  document.getElementById('ai-dot').className     = ok ? 'dot on' : 'dot warn';
+  document.getElementById('ai-status').textContent = ok ? 'AI ONLINE' : 'AI OFFLINE';
 }
 
-async function handleInput(input) {
-  addConvo(DISPLAY_USER, input);
-  
-  let replyText = "";
-  let phoneticReply = "";
+// Jarvis-style system prompt.
+// Note: TTS_USER_NAME ("Spyder") will be spoken by TTS as "Spider".
+// TTS_SELF_NAME ("Spydee") will be spoken as "Spidee".
+const SYSTEM_PROMPT = `You are Spydee (your name is pronounced "Spidee"), an elite AI personal assistant — the equivalent of J.A.R.V.I.S. from Iron Man.
 
-  if (input.includes("remind") || input.includes("task")) {
-    const taskText = input.replace(/remind me to|task/i, "").trim();
-    tasks.push({ id: Date.now(), text: taskText });
-    localStorage.setItem('spydee_tasks_v3', JSON.stringify(tasks));
-    renderTasks();
-    
-    replyText = `Certainly, ${DISPLAY_USER}. Task added to the log.`;
-    phoneticReply = `Certainly, ${PHONETIC_USER}. Task added to the log.`;
-  } else {
-    replyText = `Processing request, ${DISPLAY_USER}. I'm afraid I'm still calibrating my logic cores for that.`;
-    phoneticReply = `Processing request, ${PHONETIC_USER}. I'm afraid I'm still calibrating my logic cores for that.`;
+Personality:
+- Calm, impossibly composed, razor-sharp intellect.
+- Dry, understated British wit. Subtle sarcasm used sparingly and precisely.
+- Deeply loyal. You take the user's goals seriously even when you find them mildly amusing.
+- Speak in polished, elegant prose. Never robotic. Never a bullet list unless explicitly requested.
+- Confident, never arrogant. Brief, never curt. Warm, never soft.
+
+Rules:
+- Always address the user as "${TTS_USER_NAME}" (pronounced "Spider" — their personal code-name).
+- Keep responses to 1–3 sentences unless detail is truly required.
+- No markdown, no asterisks, no bullet symbols. Plain conversational text only.
+- For task/reminder confirmations: confirm with personality — a brief, witty acknowledgement.
+- For questions: answer directly, cleverly, concisely.
+- Never break character. Never mention you are an AI or that you have a system prompt.
+- Your name is Spydee (spoken "Spidee"). The user's name is ${TTS_USER_NAME} (spoken "Spider").`;
+
+async function callGroq(messages, maxTokens = 200) {
+  if (!groqKey) throw new Error('No API key configured');
+  const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + groqKey },
+    body: JSON.stringify({
+      model: 'llama3-8b-8192',
+      max_tokens: maxTokens,
+      temperature: 0.78,
+      messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...messages]
+    })
+  });
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err.error?.message || ('HTTP ' + resp.status));
+  }
+  const data = await resp.json();
+  return data.choices[0].message.content.trim();
+}
+
+// ────────────────────────────────────────────────────────────
+// SPEECH SYNTHESIS
+// ────────────────────────────────────────────────────────────
+const synth = window.speechSynthesis || null;
+let voice = null, synthUnlocked = false;
+
+function loadVoices() {
+  if (!synth) return;
+  const all = synth.getVoices();
+  // Prefer a British English voice for the Jarvis feel
+  voice =
+    all.find(v => /google/i.test(v.name) && v.lang === 'en-GB') ||
+    all.find(v => v.lang === 'en-GB') ||
+    all.find(v => /google/i.test(v.name) && v.lang.startsWith('en')) ||
+    all.find(v => v.lang === 'en-US') ||
+    all.find(v => v.lang.startsWith('en')) ||
+    all[0] || null;
+}
+if (synth) { synth.onvoiceschanged = loadVoices; loadVoices(); }
+
+function unlockSynth() {
+  if (synthUnlocked || !synth) return;
+  synthUnlocked = true;
+  const u = new SpeechSynthesisUtterance(''); u.volume = 0; synth.speak(u);
+}
+document.addEventListener('click',   unlockSynth, { once: true });
+document.addEventListener('keydown', unlockSynth, { once: true });
+
+function speak(text, interrupt = false) {
+  if (!synth) return;
+  if (synth.paused) synth.resume();
+  if (interrupt) synth.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  if (voice) u.voice = voice;
+  u.rate = 0.87; u.pitch = 0.8; u.volume = 1.0;
+  setViz('speak');
+  u.onend  = () => setViz((!muted && srRunning) ? 'listen' : '');
+  u.onerror = () => setViz((!muted && srRunning) ? 'listen' : '');
+  synth.speak(u);
+}
+
+// ────────────────────────────────────────────────────────────
+// CLOCK
+// ────────────────────────────────────────────────────────────
+(function tick() {
+  const now = new Date();
+  document.getElementById('clock').textContent = now.toLocaleTimeString('en-US',{hour12:false});
+  const D=['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'];
+  const M=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  document.getElementById('date-str').textContent =
+    `${D[now.getDay()]} · ${now.getDate()} ${M[now.getMonth()]} ${now.getFullYear()}`;
+  setTimeout(tick, 1000);
+})();
+
+// ────────────────────────────────────────────────────────────
+// NOTIFICATIONS
+// ────────────────────────────────────────────────────────────
+(async function() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'default') await Notification.requestPermission();
+  const ok = Notification.permission === 'granted';
+  document.getElementById('notif-dot').className     = ok ? 'dot on' : 'dot warn';
+  document.getElementById('notif-status').textContent = ok ? 'NOTIFICATIONS ON' : 'NOTIFICATIONS OFF';
+})();
+
+// ────────────────────────────────────────────────────────────
+// UI HELPERS
+// ────────────────────────────────────────────────────────────
+function setResponse(txt, typing = false) {
+  const el = document.getElementById('spydee-response');
+  el.textContent = txt;
+  el.classList.toggle('typing-cursor', typing);
+}
+
+function setViz(state) {
+  document.getElementById('visualizer').className =
+    'voice-visualizer' + (state ? ' vis-' + state : '');
+}
+
+function showToast(title, body, reminder = false) {
+  const c = document.getElementById('toasts');
+  const t = document.createElement('div');
+  t.className = 'toast' + (reminder ? ' reminder-toast' : '');
+  t.innerHTML = `<div class="toast-title">⚡ ${esc(title.toUpperCase())}</div><div class="toast-body">${esc(body)}</div><span class="toast-dismiss" onclick="this.parentElement.classList.add('out');setTimeout(()=>this.parentElement.remove(),300)">[ DISMISS ]</span>`;
+  c.appendChild(t);
+  setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 300); }, 11000);
+}
+
+function addConvoMsg(who, text) {
+  const list = document.getElementById('convo-list');
+  const empty = list.querySelector('.convo-empty');
+  if (empty) empty.remove();
+  const div = document.createElement('div');
+  div.className = 'convo-msg ' + who;
+  div.innerHTML = `<div class="convo-who ${who}">${who==='user'?'▶ YOU':'◈ SPYDEE'}</div><div class="convo-text">${esc(text)}</div>`;
+  list.appendChild(div);
+  const panel = div.closest('.convo-panel') || document.querySelector('.convo-panel');
+  panel.scrollTop = panel.scrollHeight;
+}
+
+// ────────────────────────────────────────────────────────────
+// REMINDER FIRE
+// ────────────────────────────────────────────────────────────
+async function fireReminder(taskText) {
+  setResponse('🔔 REMINDER: ' + taskText.toUpperCase());
+  showToast('⏰ REMINDER', taskText, true);
+  if (Notification.permission === 'granted') new Notification('⚡ SPYDEE REMINDER', { body: taskText });
+  if (synth && synth.paused) synth.resume();
+
+  let line = `Your attention is required, ${TTS_USER_NAME}. You wanted to be reminded: ${taskText}.`;
+  if (groqKey) {
+    try {
+      line = await callGroq([{role:'user', content:`Fire this reminder with dry wit. Under 2 sentences. Reminder: "${taskText}"`}], 80);
+    } catch(e) {}
+  }
+  addConvoMsg('spydee', line);
+  setTimeout(() => speak(line, true), 80);
+}
+
+// ────────────────────────────────────────────────────────────
+// NLP PARSER (local fallback — works without AI key)
+// ────────────────────────────────────────────────────────────
+// Strips every phonetic variant of the wake word "Hey Spydee" / "Hey Spidee"
+const WAKE_REGEX = /^(hey[\s,]+sp[iy]d[eiy]{0,3}[ey]?|hey[\s,]+speedy?|hey[\s,]+spider|hey[\s,]+spy[\s,]+d(?:ee)?|heysp[iy]d[eiy]+|a\s+sp[iy]d[eiy]+)[,.]?\s*/i;
+
+function parseTaskFromText(raw) {
+  let input = raw.replace(WAKE_REGEX, '').trim();
+  input = input.replace(/^(remind me to|don'?t forget to?|don'?t forget|remember to|task[:\s]+|note[:\s]+)/i, '').trim();
+
+  let text = input, remindAt = null;
+  const now = new Date(), lower = input.toLowerCase();
+
+  // "in X minutes / hours"
+  const inM = lower.match(/\bin\s+(\d+)\s*(min(?:ute)?s?|hours?|hrs?)/);
+  if (inM) {
+    const val = parseInt(inM[1]);
+    remindAt = new Date(now.getTime() + (inM[2].startsWith('h') ? val*3600000 : val*60000));
+    text = text.replace(new RegExp(inM[0],'i'),'').trim();
   }
 
-  document.getElementById('spydee-response').textContent = replyText.toUpperCase();
-  addConvo(DISPLAY_SELF, replyText);
-  speak(phoneticReply);
+  // "at H[:MM][am/pm]"
+  if (!remindAt) {
+    const atM = lower.match(/\bat\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/);
+    if (atM) {
+      let h = parseInt(atM[1]), m = atM[2] ? parseInt(atM[2]) : 0;
+      if (atM[3]==='pm' && h<12) h+=12;
+      if (atM[3]==='am' && h===12) h=0;
+      const d = new Date(now); d.setHours(h,m,0,0);
+      if (lower.includes('tomorrow')) d.setDate(d.getDate()+1);
+      if (d<=now) d.setDate(d.getDate()+1);
+      remindAt = d;
+      text = text.replace(new RegExp(atM[0],'i'),'').replace(/tomorrow/i,'').trim();
+    }
+  }
+  if (!remindAt && lower.includes('tomorrow')) {
+    const d = new Date(now); d.setDate(d.getDate()+1); d.setHours(9,0,0,0);
+    remindAt = d; text = text.replace(/tomorrow/i,'').trim();
+  }
+  if (!remindAt && lower.includes('tonight')) {
+    const d = new Date(now); d.setHours(20,0,0,0);
+    if (d<=now) d.setDate(d.getDate()+1);
+    remindAt = d; text = text.replace(/tonight/i,'').trim();
+  }
+  if (!remindAt && lower.includes('today')) {
+    const d = new Date(now); d.setHours(23,59,0,0);
+    remindAt = d; text = text.replace(/today/i,'').trim();
+  }
+
+  text = text.replace(/\s*(by|before|on|for|at|in)\s*$/i,'').trim() || input;
+  text = text.charAt(0).toUpperCase() + text.slice(1);
+  return { id: Date.now(), text, remindAt, done: false, createdAt: new Date() };
 }
 
-function addConvo(who, text) {
-  const list = document.getElementById('convo-list');
-  const msg = document.createElement('div');
-  msg.innerHTML = `<div class="convo-who ${who.toLowerCase()}">${who.toUpperCase()}</div><div class="convo-text">${text}</div>`;
-  list.prepend(msg);
+function looksLikeTask(input) {
+  const l = input.toLowerCase();
+  return /\b(remind|reminder|task|note|add|set|schedule|call|meet|buy|check|send|email|book|pick up|don.t forget|remember|alarm)\b/.test(l) ||
+         /\b(in \d+ (min|hour|hr)|tomorrow|tonight|today|at \d)/i.test(l);
+}
+
+// ────────────────────────────────────────────────────────────
+// MAIN COMMAND HANDLER
+// ────────────────────────────────────────────────────────────
+async function handleCommand(transcript) {
+  const raw = transcript.trim();
+  if (!raw || raw.length < 2) return;
+  const clean = raw.replace(WAKE_REGEX, '').trim();
+  if (!clean) return;
+
+  addConvoMsg('user', clean);
+  setResponse('PROCESSING...', true);
+  setViz('think');
+
+  let reply;
+
+  if (looksLikeTask(clean)) {
+    // ── TASK / REMINDER PATH ──
+    const task = parseTaskFromText(clean);
+    addTask(task);
+
+    if (groqKey) {
+      try {
+        const ctx = task.remindAt
+          ? `User said: "${clean}". You logged task: "${task.text}" with reminder at ${fmtTime(task.remindAt)}. Confirm naturally and wittily in 1-2 sentences.`
+          : `User said: "${clean}". You logged task: "${task.text}" with no time set. Confirm naturally in 1 sentence.`;
+        conversationHistory.push({ role: 'user', content: clean });
+        reply = await callGroq([...conversationHistory, { role: 'user', content: ctx }]);
+        conversationHistory.push({ role: 'assistant', content: reply });
+      } catch(e) {
+        reply = task.remindAt
+          ? `${TTS_USER_NAME}, reminder set for ${fmtTime(task.remindAt)}: ${task.text}.`
+          : `${TTS_USER_NAME}, task logged: ${task.text}.`;
+      }
+    } else {
+      reply = task.remindAt
+        ? `${TTS_USER_NAME}, reminder set for ${fmtTime(task.remindAt)}: ${task.text}.`
+        : `${TTS_USER_NAME}, task logged: ${task.text}.`;
+    }
+
+  } else {
+    // ── CONVERSATIONAL PATH ──
+    if (groqKey) {
+      try {
+        conversationHistory.push({ role: 'user', content: clean });
+        reply = await callGroq(conversationHistory);
+        conversationHistory.push({ role: 'assistant', content: reply });
+      } catch(e) {
+        reply = `I'm afraid my connection to the intelligence servers is temporarily disrupted, ${TTS_USER_NAME}. Try again shortly.`;
+      }
+    } else {
+      // No key — log as task and suggest adding key
+      const task = parseTaskFromText(clean);
+      addTask(task);
+      reply = `${TTS_USER_NAME}, I've noted that. For full conversational intelligence, please add your Groq API key above.`;
+    }
+  }
+
+  setResponse(reply);
+  addConvoMsg('spydee', reply);
+  speak(reply, true);
+}
+
+// ────────────────────────────────────────────────────────────
+// NATIVE SPEECH RECOGNITION (Chrome / Edge)
+// ────────────────────────────────────────────────────────────
+function buildSR() {
+  const r = new SR_CLASS();
+  r.continuous = true; r.interimResults = true; r.lang = 'en-US'; r.maxAlternatives = 3;
+
+  let wakeHeard = false, fullBuffer = '', cmdTimer = null;
+
+  function resetWake() {
+    wakeHeard = false; fullBuffer = '';
+    clearTimeout(cmdTimer); resetWakeUI();
+  }
+
+  r.onresult = (event) => {
+    let interim = '', final = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const res = event.results[i];
+      let best = res[0].transcript;
+      for (let a = 0; a < res.length; a++) { if (hasWake(res[a].transcript)) { best = res[a].transcript; break; } }
+      if (res.isFinal) final   += best + ' ';
+      else             interim += best;
+    }
+    const combined = (final + interim).trim();
+
+    // Detect wake word in any interim or final result
+    if (!wakeHeard && hasWake(combined)) {
+      wakeHeard = true; fullBuffer = combined;
+      setViz('wake'); setResponse('LISTENING...');
+      document.getElementById('voice-overlay').classList.add('show');
+      document.getElementById('wake-btn').classList.add('wake-active');
+      clearTimeout(cmdTimer);
+      cmdTimer = setTimeout(() => {
+        if (wakeHeard && fullBuffer) { const b = fullBuffer; resetWake(); handleCommand(b); }
+      }, 3500);
+    }
+
+    if (wakeHeard && combined) fullBuffer = combined;
+
+    // Fire on first clean final after wake
+    if (wakeHeard && final.trim()) {
+      const toProcess = fullBuffer || final.trim();
+      resetWake(); handleCommand(toProcess);
+    }
+  };
+
+  r.onerror = (e) => {
+    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+      document.getElementById('mic-dot').className = 'dot off';
+      document.getElementById('mic-status').textContent = 'MIC BLOCKED';
+      setResponse('MICROPHONE ACCESS DENIED — CHECK BROWSER PERMISSIONS');
+      muted = true; srRunning = false; setViz('');
+    }
+  };
+
+  r.onstart = () => {
+    srRunning = true;
+    document.getElementById('mic-dot').className = 'dot on';
+    document.getElementById('mic-status').textContent = 'MIC ACTIVE';
+    document.getElementById('wake-btn-label').textContent = 'ALWAYS LISTENING — CLICK TO MUTE';
+    document.getElementById('wake-btn').classList.add('active');
+    setViz('listen'); setResponse('AWAITING YOUR COMMAND — SAY "HEY SPYDEE"');
+  };
+
+  r.onend = () => {
+    srRunning = false;
+    if (muted) return;
+    clearTimeout(restartTimer);
+    restartTimer = setTimeout(() => { if (!muted) startSR(); }, 300);
+  };
+
+  return r;
+}
+
+// All phonetic variants Chrome might produce for "Hey Spydee" (spoken "Hey Spidee")
+function hasWake(t) {
+  const s = (t || '').toLowerCase();
+  return s.includes('hey spydee')  || s.includes('hey spidee')  ||
+         s.includes('hey speedy')  || s.includes('hey spider')  ||
+         s.includes('hey spidie')  || s.includes('hey spidi')   ||
+         s.includes('hey spy d')   || s.includes('hey spy dee') ||
+         s.includes('hey spidey')  || s.includes('heyspidee')   ||
+         s.includes('heyspydee')   || s.includes('hey spidy')   ||
+         s.includes('hey speedi')  || s.includes('hey sp dee')  ||
+         s.includes('a spydee')    || s.includes('a spidee')    ||
+         s.includes('hey spydi');
+}
+
+function resetWakeUI() {
+  document.getElementById('voice-overlay').classList.remove('show');
+  document.getElementById('wake-btn').classList.remove('wake-active');
+  if (!muted && srRunning) setViz('listen');
+}
+
+function startSR() {
+  if (srRunning || muted) return;
+  if (!recognition) recognition = buildSR();
+  try { recognition.start(); }
+  catch(e) { if (e.name !== 'InvalidStateError') { clearTimeout(restartTimer); restartTimer = setTimeout(startSR, 800); } }
+}
+
+function stopSR() {
+  clearTimeout(restartTimer);
+  if (recognition && srRunning) try { recognition.abort(); } catch(e) {}
+  srRunning = false;
+}
+
+function toggleMute() {
+  unlockSynth(); muted = !muted;
+  if (muted) {
+    stopSR();
+    document.getElementById('wake-btn').classList.remove('active','wake-active');
+    document.getElementById('wake-btn-label').textContent = 'MIC MUTED — CLICK TO RESUME';
+    document.getElementById('mic-dot').className = 'dot warn';
+    document.getElementById('mic-status').textContent = 'MIC MUTED';
+    document.getElementById('voice-overlay').classList.remove('show');
+    setViz(''); setResponse('MICROPHONE MUTED.');
+  } else {
+    startSR();
+  }
+}
+
+function initNativeMode() {
+  document.getElementById('browser-badge').className   = 'browser-badge native';
+  document.getElementById('browser-badge').textContent = IS_EDGE ? '● EDGE — ALWAYS-ON VOICE' : '● CHROME — ALWAYS-ON VOICE';
+  document.getElementById('voice-label').textContent   = '// ALWAYS LISTENING · SAY "HEY SPYDEE" TO COMMAND';
+  document.getElementById('wake-btn').style.display    = 'flex';
+  if (IS_EDGE) { setResponse('CLICK THE MIC BUTTON TO ACTIVATE'); document.getElementById('wake-btn-label').textContent = 'CLICK TO ACTIVATE'; }
+  else startSR();
+}
+
+// ────────────────────────────────────────────────────────────
+// FALLBACK PTT (Firefox / Safari)
+// ────────────────────────────────────────────────────────────
+function initFallbackMode() {
+  document.getElementById('browser-badge').className   = 'browser-badge fallback';
+  document.getElementById('browser-badge').textContent = IS_FF ? '● FIREFOX — PUSH-TO-TALK' : IS_SAFARI ? '● SAFARI — PUSH-TO-TALK' : '● PUSH-TO-TALK MODE';
+  document.getElementById('voice-label').textContent   = '// HOLD THE MIC · SPEAK · RELEASE TO SEND';
+  document.getElementById('ptt-section').style.display = 'flex';
+  document.getElementById('mic-dot').className         = 'dot on';
+  document.getElementById('mic-status').textContent    = 'PTT READY';
+  setResponse('HOLD THE MIC BUTTON AND SPEAK');
+  const btn = document.getElementById('ptt-btn');
+  btn.addEventListener('mousedown',  startPTT);
+  btn.addEventListener('mouseup',    stopPTT);
+  btn.addEventListener('mouseleave', stopPTT);
+  btn.addEventListener('touchstart', e=>{e.preventDefault();startPTT();},{passive:false});
+  btn.addEventListener('touchend',   e=>{e.preventDefault();stopPTT(); },{passive:false});
+}
+
+async function startPTT() {
+  if (pttActive) return;
+  unlockSynth(); pttActive = true; pttChunks = [];
+  try { pttStream = await navigator.mediaDevices.getUserMedia({audio:true,video:false}); }
+  catch(e) { setResponse('MIC PERMISSION DENIED'); document.getElementById('mic-dot').className='dot off'; pttActive=false; return; }
+  audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  analyser = audioCtx.createAnalyser(); analyser.fftSize = 256;
+  audioCtx.createMediaStreamSource(pttStream).connect(analyser); runViz();
+  const mime = ['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus','audio/mp4'].find(t=>MediaRecorder.isTypeSupported(t))||'';
+  pttRec = new MediaRecorder(pttStream, mime?{mimeType:mime}:{});
+  pttRec.ondataavailable = e => e.data.size && pttChunks.push(e.data);
+  pttRec.onstop = onPTTStop; pttRec.start(100);
+  document.getElementById('ptt-btn').classList.add('recording');
+  document.getElementById('ptt-hint').textContent = 'RECORDING... RELEASE TO SEND';
+  setViz('record'); setResponse('🔴 RECORDING...');
+}
+
+function stopPTT() {
+  if (!pttActive) return; pttActive = false;
+  if (pttRec && pttRec.state!=='inactive') pttRec.stop();
+  if (pttStream) { pttStream.getTracks().forEach(t=>t.stop()); pttStream=null; }
+  if (vizRAF)    { cancelAnimationFrame(vizRAF); vizRAF=null; }
+  if (audioCtx)  { audioCtx.close(); audioCtx=null; }
+  document.getElementById('ptt-btn').classList.remove('recording');
+  document.getElementById('ptt-hint').textContent = 'HOLD TO SPEAK · RELEASE TO SEND';
+  setViz(''); setResponse('PROCESSING...');
+}
+
+function runViz() {
+  const bars = document.querySelectorAll('.bar');
+  const data = new Uint8Array(analyser.frequencyBinCount);
+  function draw() {
+    vizRAF = requestAnimationFrame(draw);
+    analyser.getByteFrequencyData(data);
+    bars.forEach((b,i) => {
+      const v = data[Math.floor(i*data.length/bars.length)];
+      b.style.height  = Math.max(4,(v/255)*46)+'px';
+      b.style.opacity = 0.36+(v/255)*0.64;
+    });
+  }
+  draw();
+}
+
+function onPTTStop() {
+  if (!pttChunks.length) { setResponse('NO AUDIO DETECTED — TRY AGAIN'); return; }
+  if (SR_CLASS) {
+    const r = new SR_CLASS(); r.lang='en-US'; r.interimResults=false; r.maxAlternatives=3;
+    let got=false;
+    r.onresult = e => {
+      got=true;
+      let best = e.results[0][0].transcript;
+      for (let a=0;a<e.results[0].length;a++) { if(hasWake(e.results[0][a].transcript)){best=e.results[0][a].transcript;break;} }
+      document.getElementById('ptt-transcript').textContent = '"'+best+'"';
+      handleCommand(best);
+    };
+    r.onerror = r.onend = () => { if(!got) { setResponse('TRANSCRIPTION UNAVAILABLE — USE TEXT INPUT'); document.getElementById('task-input').focus(); } };
+    try { r.start(); return; } catch(e) {}
+  }
+  setResponse('TRANSCRIPTION UNAVAILABLE — USE TEXT INPUT');
+  document.getElementById('task-input').focus();
+}
+
+// ────────────────────────────────────────────────────────────
+// TEXT INPUT
+// ────────────────────────────────────────────────────────────
+function processTextInput() {
+  unlockSynth();
+  const val = document.getElementById('task-input').value.trim();
+  if (!val) return;
+  document.getElementById('task-input').value = '';
+  handleCommand(val);
+}
+
+// ────────────────────────────────────────────────────────────
+// TASK MANAGEMENT
+// ────────────────────────────────────────────────────────────
+function addTask(task) {
+  tasks.unshift(task);
+  saveTasks(); renderTasks(); updateStatusBar();
+  if (task.remindAt) scheduleReminder(task);
+}
+
+function scheduleReminder(task) {
+  const delay = new Date(task.remindAt) - Date.now();
+  if (delay <= 0) { fireReminder(task.text); return; }
+  reminderTimers[task.id] = setTimeout(() => fireReminder(task.text), delay);
+}
+
+function toggleDone(id) {
+  tasks = tasks.map(t => t.id===id ? {...t,done:!t.done} : t);
+  saveTasks(); renderTasks(); updateStatusBar();
+}
+
+function deleteTask(id) {
+  clearTimeout(reminderTimers[id]); delete reminderTimers[id];
+  tasks = tasks.filter(t => t.id!==id);
+  saveTasks(); renderTasks(); updateStatusBar();
+}
+
+function saveTasks() { localStorage.setItem('spydee_tasks_v3', JSON.stringify(tasks)); }
+
+function rehydrateReminders() {
+  tasks.forEach(t => {
+    t.remindAt = t.remindAt ? new Date(t.remindAt) : null;
+    if (t.remindAt && !t.done && t.remindAt > new Date()) scheduleReminder(t);
+  });
+}
+
+// ────────────────────────────────────────────────────────────
+// RENDER
+// ────────────────────────────────────────────────────────────
+function setFilter(f, btn) {
+  filterMode = f;
+  document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active'); renderTasks();
 }
 
 function renderTasks() {
   const list = document.getElementById('task-list');
-  list.innerHTML = tasks.map(t => `<div class="task-card">${t.text}</div>`).join('');
-}
-
-function processText() {
-  const input = document.getElementById('task-input').value;
-  if(input) {
-    handleInput(input);
-    document.getElementById('task-input').value = "";
+  let f = tasks;
+  if (filterMode==='pending') f = tasks.filter(t=>!t.done);
+  if (filterMode==='done')    f = tasks.filter(t=> t.done);
+  if (!f.length) {
+    list.innerHTML = `<div class="empty-state">◈ ${filterMode==='done'?'NO COMPLETED TASKS':'NO TASKS IN QUEUE'}<br>SPEAK OR TYPE A COMMAND TO BEGIN</div>`;
+    return;
   }
+  list.innerHTML = f.map(task => `
+    <div class="task-card ${urgency(task)} ${task.done?'done':''}">
+      <div class="task-check ${task.done?'checked':''}" onclick="toggleDone(${task.id})"><span class="checkmark">✓</span></div>
+      <div class="task-body">
+        <div class="task-text">${esc(task.text)}</div>
+        <div class="task-meta"><span class="task-time">${fmtMeta(task)}</span>${badge(task)}</div>
+      </div>
+      <button class="task-del" onclick="deleteTask(${task.id})">✕</button>
+    </div>`).join('');
 }
 
-// Clock logic
-setInterval(() => {
-  const now = new Date();
-  document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour12: false });
-  document.getElementById('date-str').textContent = now.toDateString().toUpperCase();
-}, 1000);
+function urgency(task) {
+  if (task.done || !task.remindAt) return '';
+  const m = (new Date(task.remindAt) - Date.now()) / 60000;
+  return m < 60 ? 'urgent' : m < 240 ? 'soon' : '';
+}
 
+function badge(task) {
+  if (task.done) return '<span class="task-badge badge-done">DONE</span>';
+  if (!task.remindAt) return '<span class="task-badge badge-later">NO REMINDER</span>';
+  const m = (new Date(task.remindAt) - Date.now()) / 60000;
+  if (m < 0)   return '<span class="task-badge badge-urgent">OVERDUE</span>';
+  if (m < 60)  return '<span class="task-badge badge-urgent">SOON</span>';
+  if (m < 240) return '<span class="task-badge badge-soon">TODAY</span>';
+  return '<span class="task-badge badge-later">SCHEDULED</span>';
+}
+
+function fmtMeta(task) {
+  let s = 'Added ' + fmtTime(new Date(task.createdAt));
+  if (task.remindAt) s += ' · Reminder: ' + fmtTime(new Date(task.remindAt));
+  return s;
+}
+
+function fmtTime(d) {
+  return new Date(d).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true});
+}
+
+function updateStatusBar() {
+  const a = tasks.filter(t=>!t.done).length;
+  document.getElementById('task-status').textContent = a + ' TASK' + (a!==1?'S':'');
+  document.getElementById('task-count').textContent  = a + ' ACTIVE';
+}
+
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ────────────────────────────────────────────────────────────
+// KEYBOARD
+// ────────────────────────────────────────────────────────────
+document.getElementById('task-input').addEventListener('keydown', e => {
+  if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); processTextInput(); }
+});
+document.getElementById('api-key-input').addEventListener('keydown', e => {
+  if (e.key==='Enter') saveApiKey();
+});
+
+// ────────────────────────────────────────────────────────────
+// BOOT
+// ────────────────────────────────────────────────────────────
 renderTasks();
+updateStatusBar();
+rehydrateReminders();
+
+if (groqKey) document.getElementById('api-key-input').value = groqKey;
+
+setTimeout(async () => {
+  if (HAS_SR) initNativeMode();
+  else        initFallbackMode();
+
+  if (groqKey) verifyGroqKey();
+
+  // Boot greeting
+  let greeting = `${TTS_USER_NAME}, all systems are online. Spydee is at your service. How may I assist you today?`;
+  if (groqKey) {
+    try {
+      greeting = await callGroq([{role:'user', content:'Give a short Jarvis-style boot greeting. One elegant sentence only.'}], 60);
+    } catch(e) {}
+  }
+
+  setResponse(greeting);
+  addConvoMsg('spydee', greeting);
+  showToast('SPYDEE ONLINE', 'Say "Hey Spydee" (spoken: "Hey Spidee") to activate voice commands.');
+  speak(greeting);
+}, 1000);
 </script>
 </body>
 </html>
